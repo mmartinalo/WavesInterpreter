@@ -11,6 +11,9 @@
     },
 
     "minimum-stability": "stable",
+    "autoload": {
+        "psr-0": { "WavesInterpreter\\": "lib/" }
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "master"
