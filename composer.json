@@ -1,0 +1,19 @@
+{
+    "name": "mmartinalo/waves-interpreter",
+    "license": "MIT",
+    "type": "project",
+    "description": "Lib waves interpreter on PHP for TFG",
+    "require": {
+        "php": ">=5.4.13"
+    },
+
+    "require-dev":{
+    },
+
+    "minimum-stability": "stable",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}
