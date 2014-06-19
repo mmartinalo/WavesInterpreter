@@ -14,3 +14,11 @@ app/config/parameters.yml
 
 # Composer
 composer.phar
+
+# PhpStorm
+.idea/*
+
+#git
+.git/*
+
+*~
