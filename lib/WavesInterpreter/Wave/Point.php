@@ -1,6 +1,6 @@
 <?php
 
-namespace WavesInterpreter;
+namespace WavesInterpreter\Wave;
 
 use WavesInterpreter\Exception\WavePointException;
 
@@ -27,9 +27,9 @@ class Point {
     }
 
     /**
-     * @param int $x
-     * @throws Exception\WavePointException
+     * @param $x
      * @return $this
+     * @throws \WavesInterpreter\Exception\WavePointException
      */
     public function setX($x)
     {
@@ -52,9 +52,9 @@ class Point {
     }
 
     /**
-     * @param int $y
-     * @throws Exception\WavePointException
+     * @param $y
      * @return $this
+     * @throws \WavesInterpreter\Exception\WavePointException
      */
     public function setY($y)
     {
