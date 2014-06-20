@@ -25,6 +25,8 @@ class SimpleWave extends AbstractWave{
     public function addPoint(Point $point)
     {
         $this->trail[] = $point;
+
+        $this->updateMaxAndMin($point);
     }
 
 }

@@ -27,6 +27,8 @@ class HashMapWave extends AbstractWave{
     public function addPoint(Point $point)
     {
         $this->trail[$point->getX()][$point->getY()] = ++$this->step;
+
+        $this->updateMaxAndMin($point);
     }
 
 }
