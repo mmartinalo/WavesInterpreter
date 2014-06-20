@@ -2,6 +2,8 @@
 
 
 namespace WavesInterpreter\Interpreter;
+use WavesInterpreter\Factory\Wave\SimpleWaveFactory;
+use WavesInterpreter\Factory\WaveInterpreter\HashMapWaveFactory;
 use WavesInterpreter\Wave\AbstractWave;
 
 /**
@@ -13,10 +15,14 @@ abstract class AbstractWaveInterpreter {
     /** @var  AbstractWave */
     protected  $wave;
 
-    abstract function __construct($resource);
+    public function __construct($type = 'Simple')
+    {
+        $this->wave =($type == 'Simple') ?
+            SimpleWaveFactory::getInstance()->createWave()
+            :
+            HashMapWaveFactory::getInstance()->createWave();
+    }
 
-    abstract function getMax();
-
-    abstract function getMin();
+    abstract function interpret($resource);
 
 } 
