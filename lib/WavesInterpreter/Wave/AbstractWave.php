@@ -29,43 +29,60 @@ abstract class AbstractWave {
     /** @var bool  */
     protected $is_sinusoidal = false;
 
-    protected $frequency;
+    /** @var  int */
+    protected $frequency = 0;
+
+    /** @var Point  */
+    protected $max_point = null;
+
+    /** @var Point  */
+    protected $min_point = null;
 
     public function getTrail()
     {
         return $this->trail;
     }
 
-    public function getMaxPoint()
+    public function getCrest()
     {
-        return $this->max__point;
+        return $this->crest;
     }
 
-    public function getMinPoint()
+    public function getTrough()
     {
-        return $this->min_point;
+        return $this->trough;
     }
 
     abstract function addPoint(Point $point);
+
+
+    public function addCrest(Point $point)
+    {
+        $this->crest[] = $point;
+    }
+
+    public function addTrough(Point $point)
+    {
+        $this->trough[] = $point;
+    }
 
     public function updateMaxAndMin(Point $point)
     {
         return $this->updateMax($point) || $this->updateMin($point);
     }
-
     /**
      * @param Point $point
      * @return bool
      */
     public function updateMax(Point $point)
     {
-        if(is_null($this->max__point)){
-            $this->max__point = $point;
+        if(is_null($this->max_point)){
+            $this->max_point = $point;
             return true;
         }
 
-        if($this->max__point->getX() < $point->getX()){
-            $this->max__point = $point;
+        if($this->max_point->getX() < $point->getX()){
+            $this->max_point = $point;
             return true;
         }
 
@@ -89,5 +106,15 @@ abstract class AbstractWave {
         }
 
         return false;
+    }
+
+    public function isSinusoidal()
+    {
+        return $this->is_sinusoidal;
+    }
+
+    public function setSinusoidal($bool = true)
+    {
+        $this->is_sinusoidal = $bool;
     }
 } 

@@ -2,6 +2,7 @@
 
 
 namespace WavesInterpreter;
+
 use WavesInterpreter\Exception\ImageMetadataException;
 
 /**
@@ -89,10 +90,6 @@ class ImageMetadata {
             throw new ImageMetadataException("El punto con cooredadas x: $x y coordenada y:$y  no es válido");
         }
 
-        if( $color < 0 || $color > 255){
-            throw new ImageMetadataException("El color: $color no es válido. Coordenadas x:$x  y:$y ");
-        }
-
         //No comprobamos si ya había algo, lo guardamos directamente
         $this->image_map[$x][$y] = $color;
 
@@ -133,7 +130,7 @@ class ImageMetadata {
             }
         }
 
-        return $this->colors[$selected_key];
+        return $selected_key;
     }
 
 } 

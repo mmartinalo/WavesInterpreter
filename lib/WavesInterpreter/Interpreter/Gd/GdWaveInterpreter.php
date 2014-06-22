@@ -6,7 +6,6 @@ namespace WavesInterpreter\Interpreter\Gd;
 use WavesInterpreter\Exception\WaveInterpreterException;
 use WavesInterpreter\ImageMetadata;
 use WavesInterpreter\Interpreter\AbstractWaveInterpreter;
-use WavesInterpreter\Wave\Point;
 
 /**
  * Class GdWaveInterpreter
@@ -15,7 +14,12 @@ use WavesInterpreter\Wave\Point;
 class GdWaveInterpreter extends AbstractWaveInterpreter{
 
 
-    function interpret($resource)
+    /**
+     * @param $resource
+     * @return AbstractWaveInterpreter|\WavesInterpreter\Wave\AbstractWave
+     * @throws \WavesInterpreter\Exception\WaveInterpreterException
+     */
+    function createWave($resource)
     {
 
         $gd_image = $this->loadResource($resource);
@@ -26,22 +30,9 @@ class GdWaveInterpreter extends AbstractWaveInterpreter{
 
         $image_metadata = $this->createMetaData($gd_image);
 
-        $array_map = $image_metadata->getImageMap();
-        $wave_color = $image_metadata->guessWaveColor();
+        $wave = $this->createWaveFromMetadata($image_metadata);
 
-
-        foreach($array_map as $x => $y_values){
-            foreach($y_values as $y => $color){
-
-                if($color == $wave_color){
-                   $this->wave->addPoint(new Point($x,$y));
-                }
-
-
-            }
-        }
-
-        return $this->wave;
+        return $wave;
     }
 
     /**
