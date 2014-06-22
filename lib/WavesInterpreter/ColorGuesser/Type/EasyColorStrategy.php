@@ -32,10 +32,19 @@ class EasyColorStrategy extends AbstractGuesserColorStrategy{
             return 0;
         }
 
-        //Si no existe el color que nos facilitaron en el constructor devolvemos uno aleatorio
+        //Si no existe el color que nos facilitaron devolvemos otro
        if(!array_key_exists($this->defined_color, $image_metadata->getColors())){
-           //todo devolver el entero que más se aproxime
-           return array_rand($image_metadata->getColors());
+            //return array_rand($image_metadata->getColors());
+
+           //Vamos a formar un array con la desviación de cada elemento al color definido en el constructor
+           $smallest = array();
+           foreach ($image_metadata->getColors() as $key => $i) {
+               $smallest[$key] = abs($i - $this->defined_color);
+           }
+
+           //Lo ordenamos de menor a mayor, en la clave está el código del color
+           asort($smallest);
+           return key($smallest);
        }
 
        return $this->defined_color;

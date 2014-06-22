@@ -57,7 +57,7 @@ class GdWaveInterpreter extends AbstractWaveInterpreter{
             case preg_match('/.png/i',$resource) != false :
                 $img = @imagecreatefrompng($resource);
                 break;
-            case preg_match('/.jpeg/i',$resource) != false :
+            case preg_match('/.jpg/i',$resource) != false :
                 $img = @imagecreatefromjpeg($resource);
                 break;
             default:
