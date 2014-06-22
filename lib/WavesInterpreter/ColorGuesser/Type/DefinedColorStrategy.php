@@ -7,10 +7,10 @@ use WavesInterpreter\ColorGuesser\AbstractGuesserColorStrategy;
 use WavesInterpreter\ImageMetadata;
 
 /**
- * Class EasyColorStrategy
+ * Class DefinedColorStrategy
  * @package WavesInterpreter\ColorGuesser\Type
  */
-class EasyColorStrategy extends AbstractGuesserColorStrategy{
+class DefinedColorStrategy extends AbstractGuesserColorStrategy{
 
     /** @var  int */
     protected $defined_color;

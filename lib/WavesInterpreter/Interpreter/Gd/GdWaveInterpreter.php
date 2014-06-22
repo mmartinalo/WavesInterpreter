@@ -3,7 +3,7 @@
 
 namespace WavesInterpreter\Interpreter\Gd;
 
-use WavesInterpreter\ColorGuesser\Type\EasyColorStrategy;
+use WavesInterpreter\ColorGuesser\Type\DefinedColorStrategy;
 use WavesInterpreter\Exception\WaveInterpreterException;
 use WavesInterpreter\ImageMetadata;
 use WavesInterpreter\Interpreter\AbstractWaveInterpreter;
@@ -76,7 +76,7 @@ class GdWaveInterpreter extends AbstractWaveInterpreter{
     private function createMetaData($gd_image, $wave_color = null)
     {
         //En caso de que nos pasen un color le establecemos la estrategia del adivinador correspondiente
-        $guesser = ($wave_color)? new EasyColorStrategy($wave_color) : null;
+        $guesser = ($wave_color)? new DefinedColorStrategy($wave_color) : null;
         $img_metadata = new ImageMetadata($guesser);
 
         $img_width = imagesx($gd_image);
