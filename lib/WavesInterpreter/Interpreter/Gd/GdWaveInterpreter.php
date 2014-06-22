@@ -3,6 +3,7 @@
 
 namespace WavesInterpreter\Interpreter\Gd;
 
+use WavesInterpreter\ColorGuesser\Type\EasyColorStrategy;
 use WavesInterpreter\Exception\WaveInterpreterException;
 use WavesInterpreter\ImageMetadata;
 use WavesInterpreter\Interpreter\AbstractWaveInterpreter;
@@ -17,10 +18,11 @@ class GdWaveInterpreter extends AbstractWaveInterpreter{
 
     /**
      * @param $resource
-     * @return AbstractWaveInterpreter|\WavesInterpreter\Wave\AbstractWave
+     * @param null $wave_color
      * @throws \WavesInterpreter\Exception\WaveInterpreterException
+     * @return AbstractWaveInterpreter|\WavesInterpreter\Wave\AbstractWave
      */
-    function createWave($resource)
+    function createWave($resource, $wave_color = null)
     {
 
         $gd_image = $this->loadResource($resource);
@@ -29,7 +31,7 @@ class GdWaveInterpreter extends AbstractWaveInterpreter{
             throw new WaveInterpreterException("No se leer el recurso que me has dado");
         }
 
-        $image_metadata = $this->createMetaData($gd_image);
+        $image_metadata = $this->createMetaData($gd_image, $wave_color);
 
         $wave = $this->createWaveFromMetadata($image_metadata);
 
@@ -68,11 +70,14 @@ class GdWaveInterpreter extends AbstractWaveInterpreter{
 
     /**
      * @param $gd_image
+     * @param null $wave_color
      * @return ImageMetadata
      */
-    private function createMetaData($gd_image)
+    private function createMetaData($gd_image, $wave_color = null)
     {
-        $img_metadata = new ImageMetadata();
+        //En caso de que nos pasen un color le establecemos la estrategia del adivinador correspondiente
+        $guesser = ($wave_color)? new EasyColorStrategy($wave_color) : null;
+        $img_metadata = new ImageMetadata($guesser);
 
         $img_width = imagesx($gd_image);
         $img_height = imagesy($gd_image);

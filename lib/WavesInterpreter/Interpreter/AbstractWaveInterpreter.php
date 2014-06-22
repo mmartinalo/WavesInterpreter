@@ -35,9 +35,10 @@ abstract class AbstractWaveInterpreter {
      * 6 - return Onda
      *
      * @param $resource
+     * @param null $wave_color
      * @return AbstractWave
      */
-    abstract function createWave($resource);
+    abstract function createWave($resource, $wave_color = null);
 
     /**
      * @param ImageMetadata $image_metadata

@@ -3,6 +3,8 @@
 
 namespace WavesInterpreter;
 
+use WavesInterpreter\ColorGuesser\AbstractGuesserColorStrategy;
+use WavesInterpreter\ColorGuesser\Type\EasyGuesserWaveColorStrategy;
 use WavesInterpreter\Exception\ImageMetadataException;
 
 /**
@@ -10,6 +12,10 @@ use WavesInterpreter\Exception\ImageMetadataException;
  * @package WavesInterpreter
  */
 class ImageMetadata {
+
+
+    /** @var  AbstractGuesserColorStrategy */
+    protected $guesser_strategy;
 
     /** @var  array[int][int] */
     protected $image_map;
@@ -22,6 +28,15 @@ class ImageMetadata {
 
     /** @var  int */
     protected $height;
+
+    public function __construct(AbstractGuesserColorStrategy $guesser = null)
+    {
+        if(!$guesser instanceof AbstractGuesserColorStrategy){
+            $guesser = new EasyGuesserWaveColorStrategy();
+        }
+
+        $this->guesser_strategy = $guesser;
+    }
 
     /**
      * @return array
@@ -110,27 +125,7 @@ class ImageMetadata {
      */
     public function guessWaveColor()
     {
-        //todo esto hay que meterle chicha con su patroncito de diseño y todo
-
-        if(!count($this->colors)){
-            return 0;
-        }
-
-        $selected_key = $min_repetitions = null;
-        foreach($this->colors as $key => $repetitions){
-            if(is_null($selected_key)){
-                $selected_key = $key;
-                $min_repetitions = $repetitions;
-                continue;
-            }
-
-            if($min_repetitions > $repetitions){
-                $selected_key = $key;
-                $min_repetitions = $repetitions;
-            }
-        }
-
-        return $selected_key;
+        return $this->guesser_strategy->guessWaveColor($this);
     }
 
 } 
