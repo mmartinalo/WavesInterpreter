@@ -3,6 +3,8 @@
 namespace WavesInterpreter\Factory\Wave;
 
 use WavesInterpreter\Factory\WaveAbstractFactory;
+use WavesInterpreter\Validator\AbstractWaveValidator;
+use WavesInterpreter\Validator\Simple\SimpleWaveValidator;
 use WavesInterpreter\Wave\AbstractWave;
 use WavesInterpreter\Wave\Simple\SimpleWave;
 
@@ -39,5 +41,13 @@ class SimpleWaveFactory extends WaveAbstractFactory{
     function createWave()
     {
         return new SimpleWave();
+    }
+
+    /**
+     * @return AbstractWaveValidator
+     */
+    function createValidator()
+    {
+        return new SimpleWaveValidator();
     }
 }

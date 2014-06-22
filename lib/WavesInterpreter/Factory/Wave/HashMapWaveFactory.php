@@ -3,6 +3,8 @@
 namespace WavesInterpreter\Factory\WaveInterpreter;
 
 use WavesInterpreter\Factory\WaveAbstractFactory;
+use WavesInterpreter\Validator\AbstractWaveValidator;
+use WavesInterpreter\Validator\HashMap\HashMapValidator;
 use WavesInterpreter\Wave\AbstractWave;
 use WavesInterpreter\Wave\HashMap\HashMapWave;
 
@@ -37,5 +39,13 @@ class HashMapWaveFactory extends WaveAbstractFactory{
     function createWave()
     {
         return new HashMapWave();
+    }
+
+    /**
+     * @return AbstractWaveValidator
+     */
+    function createValidator()
+    {
+        return new HashMapValidator();
     }
 }

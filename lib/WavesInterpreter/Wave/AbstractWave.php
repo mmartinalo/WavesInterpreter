@@ -38,6 +38,8 @@ abstract class AbstractWave {
     /** @var Point  */
     protected $min_point = null;
 
+    abstract function addPoint(Point $point);
+
     public function getTrail()
     {
         return $this->trail;
@@ -53,9 +55,6 @@ abstract class AbstractWave {
         return $this->trough;
     }
 
-    abstract function addPoint(Point $point);
-
-
     public function addCrest(Point $point)
     {
         $this->crest[] = $point;
@@ -66,7 +65,17 @@ abstract class AbstractWave {
         $this->trough[] = $point;
     }
 
-    public function updateMaxAndMin(Point $point)
+    public function isSinusoidal()
+    {
+        return $this->is_sinusoidal;
+    }
+
+    public function setSinusoidal($bool = true)
+    {
+        $this->is_sinusoidal = $bool;
+    }
+
+    protected function updateMaxAndMin(Point $point)
     {
         return $this->updateMax($point) || $this->updateMin($point);
     }
@@ -74,7 +83,7 @@ abstract class AbstractWave {
      * @param Point $point
      * @return bool
      */
-    public function updateMax(Point $point)
+    protected function updateMax(Point $point)
     {
         if(is_null($this->max_point)){
             $this->max_point = $point;
@@ -93,7 +102,7 @@ abstract class AbstractWave {
      * @param Point $point
      * @return bool
      */
-    public function updateMin(Point $point)
+    protected function updateMin(Point $point)
     {
         if(is_null($this->min_point)){
             $this->min_point = $point;
@@ -108,13 +117,4 @@ abstract class AbstractWave {
         return false;
     }
 
-    public function isSinusoidal()
-    {
-        return $this->is_sinusoidal;
-    }
-
-    public function setSinusoidal($bool = true)
-    {
-        $this->is_sinusoidal = $bool;
-    }
 } 

@@ -6,6 +6,7 @@ namespace WavesInterpreter\Interpreter\Gd;
 use WavesInterpreter\Exception\WaveInterpreterException;
 use WavesInterpreter\ImageMetadata;
 use WavesInterpreter\Interpreter\AbstractWaveInterpreter;
+use WavesInterpreter\Wave\Proxy\ProxyWave;
 
 /**
  * Class GdWaveInterpreter
@@ -32,7 +33,14 @@ class GdWaveInterpreter extends AbstractWaveInterpreter{
 
         $wave = $this->createWaveFromMetadata($image_metadata);
 
-        return $wave;
+        $validator = $this->wave_factory->createValidator();
+
+        if(!$validator->validate($wave)){
+            //todo que hacemos? volvemos a intentar con otro color?
+            return null;
+        }
+
+        return new ProxyWave($wave);
     }
 
     /**
