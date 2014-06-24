@@ -82,8 +82,8 @@ class GdWaveInterpreter extends AbstractWaveInterpreter{
         $img_width = imagesx($gd_image);
         $img_height = imagesy($gd_image);
 
-        $img_metadata->setWidth($img_height);
-        $img_metadata->setHeight($img_width);
+        $img_metadata->setWidth($img_width);
+        $img_metadata->setHeight($img_height);
 
 
         for($h=0;$h<$img_height;$h++){

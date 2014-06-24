@@ -70,46 +70,66 @@ abstract class AbstractWaveInterpreter {
         $continuity_blank = 0;
 
         $wave = $this->wave_factory->createWave();
-        //todo para que sea más efectivos, vambiar el foreach por whiles, y que empiece en la siguiente columna $this->limit_edge_error posiciones más abajo que la actual
 
-        foreach($array_map as $x => $y_values){
+        $finished_x= $x_color_found =false;
+        $current_x = $current_y = 0;
+
+        while(!$finished_x  && $current_x < $image_metadata->getWidth() ){
 
             if($wave_start){
                 //Si hemos empezado a interpretar la onda y no encontramos continuidad en la columna anterior sumamos 1 al error de continuidad
                 //En caso de que si lo hubiesemos encontrado lo dejamos a 0 el error de continuidad
                 $continuity_blank = ($x_color_found) ? 0 : $continuity_blank+1;
 
-                if(++$continuity_blank > $this->limit_continuity_error){
-                    break;
+                if($continuity_blank > $this->limit_continuity_error){
+                    $finished_x = true;
                 }
 
             }
+
+            //Comprobamos que existe, si no existe está mal formado el array_map...
+            if(!isset($array_map[$current_x])){
+                break;
+            }
+
+            $y_values = $array_map[$current_x];
 
             //Entero que usaremos para acumular el error sobre el eje de las y
             $edge_error = 0;
             $x_color_found = false;
+            $finished_y =false;
+            while(!$finished_y && $current_y < $image_metadata->getHeight()){
 
-            foreach($y_values as $y => $color){
-                if($x_color_found){
-                    ++$edge_error;
-                    if($edge_error > $this->limit_edge_error)
-                    {
-                        break;
-                    }
+                //Comprobamos que existe, si no existe está mal formado el array_map...
+                if(!isset($y_values[$current_y])){
+                    $finished_x = true;
+                    break;
                 }
 
+                if($x_color_found && ++$edge_error > $this->limit_edge_error){
+                    $finished_y = true;
+                }
 
-                if($color == $wave_color){
+                if($y_values[$current_y] == $wave_color){
                     $wave_start = true;
                     $x_color_found = true;
                     $edge_error = 0;
-                    $wave->addPoint(new Point($x,$y));
+                    $wave->addPoint(new Point($current_x,$current_y));
                 }
-            }
 
+                $current_y++;
+            }
+            //OJO: Si ya hemos empezado continuamos por $this->limit_edge_error posiciones más abajo que la última,
+            // es decir dos veces limit_edge_error, ya que una vez limit_edge_error es la ubicación del punto ya que añadió margen para seguir buscando
+            //pero tenemos que controlar que es como mucho la posición 0, que nos vams del array si no
+            // si no, seteamos la y a 0
+            $current_y = ($wave_start) ? max($current_y - ($this->limit_edge_error * 2),0 ): 0;
+            //aumentamos una posición en el eje de las x
+            $current_x++;
         }
 
         return $wave;
+
     }
 
 } 
