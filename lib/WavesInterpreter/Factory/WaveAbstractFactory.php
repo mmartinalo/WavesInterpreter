@@ -3,8 +3,8 @@
 
 namespace WavesInterpreter\Factory;
 
-use WavesInterpreter\Interpreter\AbstractWaveInterpreter;
 use WavesInterpreter\Validator\AbstractWaveValidator;
+use WavesInterpreter\Wave\AbstractWave;
 
 /**
  * Class WaveAbstractFactory
@@ -13,7 +13,7 @@ use WavesInterpreter\Validator\AbstractWaveValidator;
 abstract class WaveAbstractFactory{
 
     /**
-     * @return AbstractWaveInterpreter
+     * @return AbstractWave
      */
     abstract function createWave();
 
