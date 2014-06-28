@@ -1,6 +1,9 @@
 <?php
 
 namespace WavesInterpreter\Wave;
+use WavesInterpreter\Factory\PointCollectionFactory;
+use WavesInterpreter\Wave\Point\Point;
+use WavesInterpreter\Wave\Point\PointCollection\AbstractPointCollection;
 
 /**
  * + Cresta [Crest]: La cresta es el punto de máxima elongación o máxima amplitud de la onda; es decir, el punto de la onda más separado de su posición de reposo.
@@ -18,103 +21,64 @@ namespace WavesInterpreter\Wave;
  */
 abstract class AbstractWave {
 
+    /** @var  AbstractPointCollection */
     protected $trail;
 
-    /** @var array[Point] */
-    protected $crest = null;
-
-    /** @var array[Point] */
-    protected $trough = null;
-
-    /** @var bool  */
-    protected $is_sinusoidal = false;
-
-    /** @var  int */
-    protected $frequency = 0;
-
-    /** @var Point  */
-    protected $max_point = null;
-
-    /** @var Point  */
-    protected $min_point = null;
+    public function __construct(AbstractPointCollection $point_collection)
+    {
+        $point_collection->clear();
+        $this->trail = $point_collection;
+    }
 
     abstract function addPoint(Point $point);
 
+    /**
+     * @return array[Point]
+     */
+    abstract function getCrest();
+
+    /**
+     * @return array[Point]
+     */
+    abstract function getTrough();
+
+    /**
+     * @return bool
+     */
+    abstract function isSinusoidal();
+
+    /**
+     * @return Point
+     */
+    abstract function getMaxPoint();
+
+    /**
+     * @return Point
+     */
+    abstract function getMinPoint();
+
+    /**
+     * @return mixed
+     */
     public function getTrail()
     {
         return $this->trail;
     }
 
-    public function getCrest()
-    {
-        return $this->crest;
-    }
 
-    public function getTrough()
-    {
-        return $this->trough;
-    }
-
-    public function addCrest(Point $point)
-    {
-        $this->crest[] = $point;
-    }
-
-    public function addTrough(Point $point)
-    {
-        $this->trough[] = $point;
-    }
-
-    public function isSinusoidal()
-    {
-        return $this->is_sinusoidal;
-    }
-
-    public function setSinusoidal($bool = true)
-    {
-        $this->is_sinusoidal = $bool;
-    }
-
-    protected function updateMaxAndMin(Point $point)
-    {
-        return $this->updateMax($point) || $this->updateMin($point);
-    }
     /**
-     * @param Point $point
-     * @return bool
+     * @return Point
      */
-    protected function updateMax(Point $point)
+    public function getFirstPoint()
     {
-        if(is_null($this->max_point)){
-            $this->max_point = $point;
-            return true;
-        }
-
-        if($this->max_point->getX() < $point->getX()){
-            $this->max_point = $point;
-            return true;
-        }
-
-        return false;
+        return $this->trail->getFirst();
     }
 
     /**
-     * @param Point $point
-     * @return bool
+     * @return Point
      */
-    protected function updateMin(Point $point)
+    public function getLastPoint()
     {
-        if(is_null($this->min_point)){
-            $this->min_point = $point;
-            return true;
-        }
-
-        if($this->min_point->getX() > $point->getX()){
-            $this->min_point = $point;
-            return true;
-        }
-
-        return false;
+        return $this->trail->getlast();
     }
-
 } 

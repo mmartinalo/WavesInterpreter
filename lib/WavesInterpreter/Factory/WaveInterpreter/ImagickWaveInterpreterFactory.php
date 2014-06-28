@@ -2,8 +2,8 @@
 
 namespace WavesInterpreter\Factory\WaveInterpreter;
 
-use WavesInterpreter\Factory\WaveInterpreterAbstractFactory;
-use WavesInterpreter\Interpreter\AbstractWaveInterpreter;
+use WavesInterpreter\Factory\WaveFactory;
+use WavesInterpreter\Factory\WaveInterpreterFactory;
 use WavesInterpreter\Interpreter\Imagick\ImagickWaveInterpreter;
 
 
@@ -11,14 +11,12 @@ use WavesInterpreter\Interpreter\Imagick\ImagickWaveInterpreter;
  * Class ImagickWaveInterpreterFactory
  * @package WavesInterpreter\Factory\WaveInterpreter
  */
-class ImagickWaveInterpreterFactory extends WaveInterpreterAbstractFactory{
+class ImagickWaveInterpreterFactory extends WaveInterpreterFactory{
 
     /** @var ImagickWaveInterpreterFactory  */
     private static $instance = null;
 
     private function __construct(){}
-
-    private function __clone(){}
 
 
     public static function getInstance()
@@ -31,14 +29,21 @@ class ImagickWaveInterpreterFactory extends WaveInterpreterAbstractFactory{
         return self::$instance;
     }
 
-    /**
-     * @param string $waveType
-     * @return AbstractWaveInterpreter
-     */
-    function createWaveInterpreter($waveType = 'Simple')
-    {
-        return new ImagickWaveInterpreter($waveType);
+    public function __clone(){
+        throw new \Exception("Operación no permitida");
     }
 
 
+    /**
+     * @param WaveFactory $wave_factory
+     * @return ImagickWaveInterpreter
+     */
+    function createWaveInterpreter(WaveFactory $wave_factory= null)
+    {
+        if(!$wave_factory){
+            $wave_factory = ComplexWaveFactory::getInstance();
+        }
+
+        return new ImagickWaveInterpreter($wave_factory);
+    }
 }

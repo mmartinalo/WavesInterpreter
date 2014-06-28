@@ -5,19 +5,21 @@ namespace WavesInterpreter\Factory\Wave;
 use WavesInterpreter\Factory\PointCollection\SimpleCollectionFactory;
 use WavesInterpreter\Factory\PointCollectionFactory;
 use WavesInterpreter\Factory\WaveFactory;
-use WavesInterpreter\Wave\Type\SimpleWave;
+use WavesInterpreter\Wave\AbstractWave;
+use WavesInterpreter\Wave\Type\ComplexWave;
 
 
 /**
- * Class SimpleWaveFactory
+ * Class HashMapWaveFactory
  * @package WavesInterpreter\Factory\WaveInterpreter
  */
-class SimpleWaveFactory extends WaveFactory{
+class ComplexWaveFactory extends WaveFactory{
 
-    /** @var SimpleWaveFactory  */
+    /** @var ComplexWaveFactory  */
     private static $instance = null;
 
     private function __construct(){}
+
 
 
     public static function getInstance()
@@ -36,14 +38,14 @@ class SimpleWaveFactory extends WaveFactory{
 
     /**
      * @param PointCollectionFactory $collection_factory
-     * @return SimpleWaveFactory
+     * @return AbstractWave
      */
-    function createWave(PointCollectionFactory $collection_factory= null)
+    function createWave(PointCollectionFactory $collection_factory = null)
     {
         if(!$collection_factory){
             $collection_factory = SimpleCollectionFactory::getInstance();
         }
 
-        return new SimpleWave($collection_factory->createCollection());
+        return new ComplexWave($collection_factory->createCollection());
     }
 }

@@ -6,12 +6,16 @@
  * Time: 17:22
  */
 
-namespace WavesInterpreter\ColorGuesser\Type;
+namespace WavesInterpreter\ColorGuesser\Strategy;
 
 
 use WavesInterpreter\ColorGuesser\AbstractGuesserColorStrategy;
 use WavesInterpreter\ImageMetadata;
 
+/**
+ * Class MinGuesserWaveColorStrategy
+ * @package WavesInterpreter\ColorGuesser\Strategy
+ */
 class MinGuesserWaveColorStrategy extends AbstractGuesserColorStrategy{
 
     /**

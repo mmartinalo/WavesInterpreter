@@ -2,8 +2,9 @@
 
 namespace WavesInterpreter\Factory\WaveInterpreter;
 
-use WavesInterpreter\Factory\WaveInterpreterAbstractFactory;
-use WavesInterpreter\Interpreter\AbstractWaveInterpreter;
+use WavesInterpreter\Factory\WaveFactory;
+use WavesInterpreter\Factory\Wave\ComplexWaveFactory;
+use WavesInterpreter\Factory\WaveInterpreterFactory;
 use WavesInterpreter\Interpreter\Gd\GdWaveInterpreter;
 
 
@@ -11,14 +12,12 @@ use WavesInterpreter\Interpreter\Gd\GdWaveInterpreter;
  * Class GdWaveInterpreterFactory
  * @package WavesInterpreter\Factory\WaveInterpreter
  */
-class GdWaveInterpreterFactory extends WaveInterpreterAbstractFactory{
+class GdWaveInterpreterFactory extends WaveInterpreterFactory{
 
     /** @var GdWaveInterpreterFactory  */
     private static $instance = null;
 
     private function __construct(){}
-
-    private function __clone(){}
 
 
     public static function getInstance()
@@ -31,14 +30,21 @@ class GdWaveInterpreterFactory extends WaveInterpreterAbstractFactory{
         return self::$instance;
     }
 
-    /**
-     * @param string $waveType
-     * @return AbstractWaveInterpreter
-     */
-    function createWaveInterpreter($waveType = 'Simple')
-    {
-        return new GdWaveInterpreter($waveType);
+    public function __clone(){
+        throw new \Exception("Operación no permitida");
     }
 
 
+    /**
+     * @param WaveFactory $wave_factory
+     * @return GdWaveInterpreter
+     */
+    function createWaveInterpreter(WaveFactory $wave_factory = null)
+    {
+        if(!$wave_factory){
+            $wave_factory = ComplexWaveFactory::getInstance();
+        }
+
+        return new GdWaveInterpreter($wave_factory);
+    }
 }

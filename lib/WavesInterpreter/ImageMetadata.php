@@ -4,7 +4,7 @@
 namespace WavesInterpreter;
 
 use WavesInterpreter\ColorGuesser\AbstractGuesserColorStrategy;
-use WavesInterpreter\ColorGuesser\Type\EasyGuesserWaveColorStrategy;
+use WavesInterpreter\ColorGuesser\Strategy\EasyGuesserWaveColorStrategy;
 use WavesInterpreter\Exception\ImageMetadataException;
 
 /**
@@ -31,6 +31,7 @@ class ImageMetadata {
 
     public function __construct(AbstractGuesserColorStrategy $guesser = null)
     {
+        //todo Crear la instancia d elos adivinadores correctamente
         if(!$guesser instanceof AbstractGuesserColorStrategy){
             $guesser = new EasyGuesserWaveColorStrategy();
         }

@@ -1,12 +1,16 @@
 <?php
 
 
-namespace WavesInterpreter\ColorGuesser\Type;
+namespace WavesInterpreter\ColorGuesser\Strategy;
 
 
 use WavesInterpreter\ColorGuesser\AbstractGuesserColorStrategy;
 use WavesInterpreter\ImageMetadata;
 
+/**
+ * Class EasyGuesserWaveColorStrategy
+ * @package WavesInterpreter\ColorGuesser\Strategy
+ */
 class EasyGuesserWaveColorStrategy extends AbstractGuesserColorStrategy{
 
     /**
