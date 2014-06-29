@@ -13,7 +13,7 @@ abstract class AbstractWaveValidator {
 
     /**
      * @param AbstractWave $wave
-     * @return true
+     * @return bool
      */
     abstract function validate(AbstractWave $wave);
 } 

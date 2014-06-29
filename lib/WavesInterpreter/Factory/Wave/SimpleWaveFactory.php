@@ -5,6 +5,8 @@ namespace WavesInterpreter\Factory\Wave;
 use WavesInterpreter\Factory\PointCollection\SimpleCollectionFactory;
 use WavesInterpreter\Factory\PointCollectionFactory;
 use WavesInterpreter\Factory\WaveFactory;
+use WavesInterpreter\Validator\AbstractWaveValidator;
+use WavesInterpreter\Validator\Simple\SimpleWaveValidator;
 use WavesInterpreter\Wave\Type\SimpleWave;
 
 
@@ -45,5 +47,13 @@ class SimpleWaveFactory extends WaveFactory{
         }
 
         return new SimpleWave($collection_factory->createCollection());
+    }
+
+    /**
+     * @return SimpleWaveValidator
+     */
+    function createValidator()
+    {
+        return new SimpleWaveValidator();
     }
 }

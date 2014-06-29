@@ -3,6 +3,7 @@
 
 namespace WavesInterpreter\Factory;
 
+use WavesInterpreter\Validator\AbstractWaveValidator;
 use WavesInterpreter\Wave\AbstractWave;
 
 /**
@@ -16,5 +17,10 @@ abstract class WaveFactory{
      * @return AbstractWave
      */
     abstract function createWave(PointCollectionFactory $collection_factory = null);
+
+    /**
+     * @return AbstractWaveValidator
+     */
+    abstract function createValidator();
 
 }

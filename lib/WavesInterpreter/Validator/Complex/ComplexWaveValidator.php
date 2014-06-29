@@ -1,19 +1,19 @@
 <?php
 
 
-namespace WavesInterpreter\Validator\Simple;
+namespace WavesInterpreter\Validator\Complex;
 
 
 use WavesInterpreter\Exception\WaveValidatorException;
 use WavesInterpreter\Validator\AbstractWaveValidator;
 use WavesInterpreter\Wave\AbstractWave;
-use WavesInterpreter\Wave\Type\SimpleWave;
+use WavesInterpreter\Wave\Type\ComplexWave;
 
 /**
  * Class ComplexWaveValidator
- * @package WavesInterpreter\Validator\Simple
+ * @package WavesInterpreter\Validator\Complex
  */
-class SimpleWaveValidator extends AbstractWaveValidator{
+class ComplexWaveValidator extends AbstractWaveValidator{
 
     /**
      * @param AbstractWave $wave
@@ -22,7 +22,7 @@ class SimpleWaveValidator extends AbstractWaveValidator{
      */
     function validate(AbstractWave $wave)
     {
-        if(!$wave instanceof SimpleWave){
+        if(!$wave instanceof ComplexWave){
             throw new WaveValidatorException('Me está llegando una onda de la clase: '.get_class($wave));
         }
 
