@@ -85,11 +85,14 @@ class GdWaveInterpreter extends AbstractWaveInterpreter{
         $img_metadata->setWidth($img_width);
         $img_metadata->setHeight($img_height);
 
-
-        for($h=0;$h<$img_height;$h++){
-            for($w=0;$w<$img_width;$w++){
+        //la librería gd_image coge como coordenada 0,0 la esquina superior izquierda
+        //Nosortos queremos la inferior izquiera, por lo que a las y le tenemos que coger el valor inverso al obtenido
+        //Para las x nos da igual, ya que lo comparten
+        for($w=0;$w<$img_width;$w++){
+            for($h=0;$h<$img_height;$h++){
                 $rgb = ImageColorAt($gd_image, $w, $h);
-                $img_metadata->addPixel($w, $h,$rgb);
+                $real_y = $img_height - $h -1; //-1 ya que recorremos el array con < en lugar de <= ya que nos salidríamos de la imagen
+                $img_metadata->addPixel($w, $real_y, $rgb);
             }
         }
 
