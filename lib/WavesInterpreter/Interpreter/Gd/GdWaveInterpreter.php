@@ -7,7 +7,7 @@ use WavesInterpreter\ColorGuesser\Strategy\DefinedColorStrategy;
 use WavesInterpreter\Exception\WaveInterpreterException;
 use WavesInterpreter\ImageMetadata;
 use WavesInterpreter\Interpreter\AbstractWaveInterpreter;
-use WavesInterpreter\Wave\Type\ProxyWave;
+use WavesInterpreter\Wave\Proxy\ProxyWave;
 
 /**
  * Class GdWaveInterpreter

@@ -1,16 +1,16 @@
 <?php
 
-namespace WavesInterpreter\Wave\Type;
+namespace WavesInterpreter\Wave\Simple;
 
 use WavesInterpreter\Exception\WaveException;
-use WavesInterpreter\Wave\Point\Point;
+use WavesInterpreter\Point\Point;
 
 use WavesInterpreter\Wave\AbstractWave;
 
 
 /**
  * Class SimpleWave
- * @package WavesInterpreter\Wave\Type
+ * @package WavesInterpreter\Wave\Simple
  */
 class SimpleWave extends AbstractWave{
 

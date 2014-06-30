@@ -1,9 +1,9 @@
 <?php
 
 namespace WavesInterpreter\Wave;
-use WavesInterpreter\Factory\PointCollectionFactory;
-use WavesInterpreter\Wave\Point\Point;
-use WavesInterpreter\Wave\Point\PointCollection\AbstractPointCollection;
+
+use WavesInterpreter\Point\Point;
+use WavesInterpreter\Point\PointCollection\AbstractPointCollection;
 
 /**
  * + Cresta [Crest]: La cresta es el punto de máxima elongación o máxima amplitud de la onda; es decir, el punto de la onda más separado de su posición de reposo.
@@ -58,7 +58,7 @@ abstract class AbstractWave {
     abstract function getMinPoint();
 
     /**
-     * @return mixed
+     * @return AbstractPointCollection
      */
     public function getTrail()
     {

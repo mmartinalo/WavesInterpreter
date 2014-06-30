@@ -3,7 +3,7 @@
 
 namespace WavesInterpreter\Factory;
 
-use WavesInterpreter\Wave\Point\PointCollection\AbstractPointCollection;
+use WavesInterpreter\Point\PointCollection\AbstractPointCollection;
 
 /**
  * Class PointCollectionFactory

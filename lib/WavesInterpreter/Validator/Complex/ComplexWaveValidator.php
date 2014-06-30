@@ -7,7 +7,7 @@ namespace WavesInterpreter\Validator\Complex;
 use WavesInterpreter\Exception\WaveValidatorException;
 use WavesInterpreter\Validator\AbstractWaveValidator;
 use WavesInterpreter\Wave\AbstractWave;
-use WavesInterpreter\Wave\Type\ComplexWave;
+use WavesInterpreter\Wave\Complex\ComplexWave;
 
 /**
  * Class ComplexWaveValidator

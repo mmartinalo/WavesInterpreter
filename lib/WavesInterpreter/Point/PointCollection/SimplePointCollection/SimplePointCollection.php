@@ -1,62 +1,50 @@
 <?php
 
-namespace WavesInterpreter\Wave\PointCollection\HashMapPointCollection;
+namespace WavesInterpreter\Point\PointCollection\SimplePointCollection;
 
-use WavesInterpreter\Wave\Point\Point;
-use WavesInterpreter\Wave\Point\PointCollection\AbstractPointCollection;
+use WavesInterpreter\Point\Point;
+use WavesInterpreter\Point\PointCollection\AbstractPointCollection;
 
 /**
- * Class HashMapPointCollection
- * @package WavesInterpreter\Wave\PointCollection\HashMapPointCollection
+ * Class SimplePointCollection
+ * @package WavesInterpreter\PointCollection\SimplePointCollection
  */
-class HashMapPointCollection extends AbstractPointCollection{
-
-    /** @var int variable que guardará el orden del recorrido a la hora de insertar */
-    protected $step;
+class SimplePointCollection extends AbstractPointCollection{
 
     public function __construct()
     {
-        $this->step = 0;
         $this->collection = array();
         $this->position = 0;
     }
 
     function addPoint(Point $point)
     {
-        //Guardamos el step en el array y luego incrementamos
-        $this->collection[$point->getX()][$point->getY()] = $this->step++;
+        $this->collection[] = $point;
     }
 
     function clear()
     {
-        $this->step = 0;
         $this->collection = array();
     }
 
     function getFirst()
     {
-        if(!$this->step){
+        if(!count($this->collection)){
             return null;
         }
-        //todo Mirar como vuelve lo de array_search
-        //return
+
+        return $this->collection[0];
     }
 
     function getLast()
     {
-        if(!$this->step){
-            return null;
-        }
-
-        //todo Mirar como vuelve lo de array_search
-        //return
+       return end($this->collection);
     }
 
     function count()
     {
-        return $this->step;
+        return count($this->collection);
     }
-
 
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
@@ -66,9 +54,7 @@ class HashMapPointCollection extends AbstractPointCollection{
      */
     public function current()
     {
-        $key = array_search($this->position,$this->collection);
-        //todo return new Point
-        //return $this->collection[];
+        return $this->collection[$this->position];
     }
 
     /**
@@ -102,7 +88,7 @@ class HashMapPointCollection extends AbstractPointCollection{
      */
     public function valid()
     {
-        return (array_search($this->position,$this->collection)) ? true : false;
+        return isset($this->collection[$this->position]);
     }
 
     /**
@@ -115,6 +101,4 @@ class HashMapPointCollection extends AbstractPointCollection{
     {
         $this->position = 0;
     }
-
-
 }

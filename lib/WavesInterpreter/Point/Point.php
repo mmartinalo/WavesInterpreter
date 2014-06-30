@@ -1,12 +1,12 @@
 <?php
 
-namespace WavesInterpreter\Wave\Point;
+namespace WavesInterpreter\Point;
 
 use WavesInterpreter\Exception\WavePointException;
 
 /**
  * Class Point
- * @package WavesInterpreter\Wave\Point
+ * @package WavesInterpreter\Point
  */
 class Point {
 

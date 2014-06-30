@@ -4,7 +4,7 @@ namespace WavesInterpreter\Factory\PointCollection;
 
 
 use WavesInterpreter\Factory\PointCollectionFactory;
-use WavesInterpreter\Wave\PointCollection\HashMapPointCollection\HashMapPointCollection;
+use WavesInterpreter\Point\PointCollection\HashMapPointCollection\HashMapPointCollection;
 
 /**
  * Class HashMapCollectionFactory

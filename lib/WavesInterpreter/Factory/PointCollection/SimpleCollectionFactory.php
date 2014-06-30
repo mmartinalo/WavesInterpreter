@@ -4,7 +4,7 @@ namespace WavesInterpreter\Factory\PointCollection;
 
 
 use WavesInterpreter\Factory\PointCollectionFactory;
-use WavesInterpreter\Wave\Point\PointCollection\SimplePointCollection\SimplePointCollection;
+use WavesInterpreter\Point\PointCollection\SimplePointCollection\SimplePointCollection;
 
 /**
  * Class SimpleCollectionFactory

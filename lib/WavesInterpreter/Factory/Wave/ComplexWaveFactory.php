@@ -5,10 +5,9 @@ namespace WavesInterpreter\Factory\Wave;
 use WavesInterpreter\Factory\PointCollection\SimpleCollectionFactory;
 use WavesInterpreter\Factory\PointCollectionFactory;
 use WavesInterpreter\Factory\WaveFactory;
-use WavesInterpreter\Validator\AbstractWaveValidator;
 use WavesInterpreter\Validator\Complex\ComplexWaveValidator;
 use WavesInterpreter\Wave\AbstractWave;
-use WavesInterpreter\Wave\Type\ComplexWave;
+use WavesInterpreter\Wave\Complex\ComplexWave;
 
 
 /**

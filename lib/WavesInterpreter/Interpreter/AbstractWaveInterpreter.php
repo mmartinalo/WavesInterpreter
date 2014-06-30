@@ -7,7 +7,7 @@ use WavesInterpreter\Factory\WaveFactory;
 use WavesInterpreter\Factory\Wave\ComplexWaveFactory;
 use WavesInterpreter\ImageMetadata;
 use WavesInterpreter\Wave\AbstractWave;
-use WavesInterpreter\Wave\Point\Point;
+use WavesInterpreter\Point\Point;
 
 /**
  * Class AbstractWaveInterpreter

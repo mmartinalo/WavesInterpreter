@@ -1,11 +1,11 @@
 <?php
 
-namespace WavesInterpreter\Wave\Point\PointCollection;
-use WavesInterpreter\Wave\Point\Point;
+namespace WavesInterpreter\Point\PointCollection;
+use WavesInterpreter\Point\Point;
 
 /**
  * Class AbstractPointCollection
- * @package WavesInterpreter\Wave\PointCollection
+ * @package WavesInterpreter\PointCollection
  */
 abstract class AbstractPointCollection implements \Iterator{
 

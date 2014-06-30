@@ -1,10 +1,10 @@
 <?php
 
-namespace WavesInterpreter\Wave\Type;
+namespace WavesInterpreter\Wave\Proxy;
 
 
 use WavesInterpreter\Exception\WaveException;
-use WavesInterpreter\Wave\Point\Point;
+use WavesInterpreter\Point\Point;
 use WavesInterpreter\Wave\AbstractWave;
 
 /**
@@ -43,7 +43,7 @@ class ProxyWave extends AbstractWave{
      */
     public function getCrest()
     {
-        return $this->wave->getTrail();
+        return $this->wave->getCrest();
     }
 
     /**

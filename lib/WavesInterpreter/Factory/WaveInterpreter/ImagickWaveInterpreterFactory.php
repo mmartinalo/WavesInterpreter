@@ -2,6 +2,7 @@
 
 namespace WavesInterpreter\Factory\WaveInterpreter;
 
+use WavesInterpreter\Factory\Wave\ComplexWaveFactory;
 use WavesInterpreter\Factory\WaveFactory;
 use WavesInterpreter\Factory\WaveInterpreterFactory;
 use WavesInterpreter\Interpreter\Imagick\ImagickWaveInterpreter;
