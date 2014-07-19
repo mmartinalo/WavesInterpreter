@@ -6,6 +6,6 @@ namespace WavesInterpreter\Exception;
  * Class ImageMetadataException
  * @package WavesInterpreter\Exception
  */
-class ImageMetadataException extends \Exception{
+class ImageMetadataException extends WaveInterpreterException{
 
 } 

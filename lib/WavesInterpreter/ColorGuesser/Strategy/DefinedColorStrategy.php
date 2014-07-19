@@ -24,27 +24,33 @@ class DefinedColorStrategy extends AbstractGuesserColorStrategy{
      * @param ImageMetadata $image_metadata
      * @return mixed
      */
-    function guessWaveColor(ImageMetadata $image_metadata)
+    function guess(ImageMetadata $image_metadata)
     {
-        //Tiene que tener los datos de la imagen ya cargados
-        if(!count($image_metadata->getColors())){
-            //throw new WaveException('No puedes pedirme un color de onda si no existe ningún color en la imagen!');
-            return 0;
-        }
 
         //Si no existe el color que nos facilitaron devolvemos otro
        if(!array_key_exists($this->defined_color, $image_metadata->getColors())){
             //return array_rand($image_metadata->getColors());
 
            //Vamos a formar un array con la desviación de cada elemento al color definido en el constructor
-           $smallest = array();
-           foreach ($image_metadata->getColors() as $key => $i) {
-               $smallest[$key] = abs($i - $this->defined_color);
+           $closest = array();
+           foreach ($image_metadata->getColors() as $key_color => $num_repetitions) {
+
+               //Si lo hemos adivinado antes pasamos de él
+               if(in_array($key_color, $this->guessed_colors)){
+                   continue;
+               }
+
+               $closest[$key_color] = abs($key_color - $this->defined_color);
+           }
+
+           //Como pueden estar todos los colores comprobados devolvemos 0 en tal caso
+           if(!count($closest)){
+               return 0;
            }
 
            //Lo ordenamos de menor a mayor, en la clave está el código del color
-           asort($smallest);
-           return key($smallest);
+           asort($closest);
+           return key($closest);
        }
 
        return $this->defined_color;

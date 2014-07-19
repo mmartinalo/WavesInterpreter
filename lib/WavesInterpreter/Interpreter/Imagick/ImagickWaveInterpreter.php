@@ -3,8 +3,8 @@
 namespace WavesInterpreter\Interpreter\Imagick;
 
 
+use WavesInterpreter\ImageMetadata;
 use WavesInterpreter\Interpreter\AbstractWaveInterpreter;
-use WavesInterpreter\Wave\AbstractWave;
 
 /**
  * Class ImagickWaveInterpreter
@@ -14,19 +14,25 @@ class ImagickWaveInterpreter extends AbstractWaveInterpreter{
 
 
     /**
-     * 1 - Leer recurso
-     * 2 - Ccrear ImageMap
-     * 3 - Adivinar color de la onda
-     * 4 - Crear onda desde ImageMap
-     * 5 - Validar onda
-     * 6 - return Onda
+     * Lee el recurso proporcionado
      *
-     * @param $resource
-     * @param null $wave_color
-     * @return AbstractWave
+     * @param string
+     * @return resource
      */
-    function createWave($resource, $wave_color = null)
+    protected function loadResource($resource)
     {
-        // TODO: Implement createWave() method.
+        // TODO: Implement loadResource() method.
+    }
+
+    /**
+     * Crea una ImageMetadata que será lo que sabemos interpretar de manera genérica para el recurso proporcionado
+     *
+     * @param $gd_image
+     * @param null $wave_color
+     * @return ImageMetadata
+     */
+    protected function createMetaData($gd_image, $wave_color = null)
+    {
+        // TODO: Implement createMetaData() method.
     }
 }

@@ -4,10 +4,8 @@
 namespace WavesInterpreter\Interpreter\Gd;
 
 use WavesInterpreter\ColorGuesser\Strategy\DefinedColorStrategy;
-use WavesInterpreter\Exception\WaveInterpreterException;
 use WavesInterpreter\ImageMetadata;
 use WavesInterpreter\Interpreter\AbstractWaveInterpreter;
-use WavesInterpreter\Wave\Proxy\ProxyWave;
 
 /**
  * Class GdWaveInterpreter
@@ -17,39 +15,10 @@ class GdWaveInterpreter extends AbstractWaveInterpreter{
 
 
     /**
-     * @param $resource
-     * @param null $wave_color
-     * @throws \WavesInterpreter\Exception\WaveInterpreterException
-     * @return AbstractWaveInterpreter|\WavesInterpreter\Wave\AbstractWave
-     */
-    function createWave($resource, $wave_color = null)
-    {
-
-        $gd_image = $this->loadResource($resource);
-
-        if(!is_resource($gd_image)){
-            throw new WaveInterpreterException("No se leer el recurso que me has dado");
-        }
-
-        $image_metadata = $this->createMetaData($gd_image, $wave_color);
-
-        $wave = $this->createWaveFromMetadata($image_metadata);
-
-        $validator = $this->wave_factory->createValidator();
-
-        if(!$validator->validate($wave)){
-            //todo que hacemos? volvemos a intentar con otro color?
-            return null;
-        }
-
-        return new ProxyWave($wave);
-    }
-
-    /**
      * @param string
-     * @return null|resource
+     * @return resource
      */
-    private function loadResource($resource)
+    protected function loadResource($resource)
     {
         $img = null;
 
@@ -73,7 +42,7 @@ class GdWaveInterpreter extends AbstractWaveInterpreter{
      * @param null $wave_color
      * @return ImageMetadata
      */
-    private function createMetaData($gd_image, $wave_color = null)
+    protected function createMetaData($gd_image, $wave_color = null)
     {
         //En caso de que nos pasen un color le establecemos la estrategia del adivinador correspondiente
         $guesser = ($wave_color)? new DefinedColorStrategy($wave_color) : null;

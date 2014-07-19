@@ -3,11 +3,13 @@
 namespace WavesInterpreter\Interpreter;
 
 
+use WavesInterpreter\Exception\WaveInterpreterException;
 use WavesInterpreter\Factory\WaveFactory;
 use WavesInterpreter\Factory\Wave\ComplexWaveFactory;
 use WavesInterpreter\ImageMetadata;
 use WavesInterpreter\Wave\AbstractWave;
 use WavesInterpreter\Point\Point;
+use WavesInterpreter\Wave\Proxy\ProxyWave;
 
 /**
  * Class AbstractWaveInterpreter
@@ -51,9 +53,74 @@ abstract class AbstractWaveInterpreter {
      *
      * @param string $resource
      * @param int $wave_color
+     *
+     * @throws \WavesInterpreter\Exception\WaveInterpreterException
+     *
      * @return AbstractWave
      */
-    abstract function createWave($resource, $wave_color = null);
+    public function createWave($resource, $wave_color = null)
+    {
+
+        $this->initCreateWave();
+
+        $gd_image = $this->loadResource($resource);
+
+        if(!is_resource($gd_image)){
+            throw new WaveInterpreterException("No se leer el recurso que me has dado");
+        }
+
+        $image_metadata = $this->createMetaData($gd_image, $wave_color);
+
+        $wave = $this->createWaveFromMetadata($image_metadata);
+
+        $validator = $this->wave_factory->createValidator();
+
+        $this->preValidate();
+
+        if(!$validator->validate($wave)){
+            //todo que hacemos? volvemos a intentar con otro color?
+            return null;
+        }
+
+        $this->postValidate();
+
+
+        $this->finishCreateWave();
+
+        return new ProxyWave($wave);
+    }
+
+
+    /**
+     * Lee el recurso proporcionado
+     *
+     * @param string
+     * @return resource
+     */
+    abstract protected function loadResource($resource);
+
+    /**
+     * Crea una ImageMetadata que será lo que sabemos interpretar de manera genérica para el recurso proporcionado
+     *
+     * @param $gd_image
+     * @param null $wave_color
+     * @return ImageMetadata
+     */
+    abstract protected function createMetaData($gd_image, $wave_color = null);
+
+
+    /** Se llama al inicio del método initCreateWave */
+    protected function initCreateWave(){}
+
+    /** Se llama al final del método finishCreateWave */
+    protected function finishCreateWave(){}
+
+    /** Se llama antes de llamar al método guess*/
+    protected function preValidate(){}
+
+    /** Se llama después de llamar al método guess*/
+    protected function postValidate(){}
+
 
     /**
      * @param ImageMetadata $image_metadata

@@ -47,8 +47,8 @@ class ComplexWave extends AbstractWave{
         $this->trail->addPoint($point);
 
         //Para no estar actualizando valores en cada adicción de un punto lo haremos en los mismos getter
-        $this->crest = null; //El array vaio indica que no tiene crestas
-        $this->trough = null; //El array vaio indica que no tiene valles
+        $this->crest = null; //El array vacio indica que no tiene crestas
+        $this->trough = null; //El array vacio indica que no tiene valles
         $this->is_sinusoidal = null;
         $this->max_point = null;
         $this->min_point = null;

@@ -7,6 +7,6 @@ namespace WavesInterpreter\Exception;
  * Class WaveValidatorException
  * @package WavesInterpreter\Exception
  */
-class WaveValidatorException extends \Exception{
+class WaveValidatorException extends WaveInterpreterException{
 
 } 
