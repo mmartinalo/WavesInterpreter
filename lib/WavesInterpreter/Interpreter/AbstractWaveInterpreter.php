@@ -3,6 +3,8 @@
 namespace WavesInterpreter\Interpreter;
 
 
+use WavesInterpreter\ColorGuesser\AbstractGuesserColorStrategy;
+use WavesInterpreter\ColorGuesser\Strategy\EasyGuesserWaveColorStrategy;
 use WavesInterpreter\Exception\WaveInterpreterException;
 use WavesInterpreter\Factory\WaveFactory;
 use WavesInterpreter\Factory\Wave\ComplexWaveFactory;
@@ -21,26 +23,49 @@ abstract class AbstractWaveInterpreter {
     protected  $wave_factory;
 
     /**
-     * Límite de puntos sobre el eje y que estamos dispuestos a asumir como margen
+     * Algoritmo que adivina el color de la onda en la imagen
+     *
+     * @var \WavesInterpreter\ColorGuesser\AbstractGuesserColorStrategy
+     */
+    protected $guesser_strategy;
+
+
+    /**
+     * Número mñaximo de intentos que tiene el adivinador para acertar con el color de la onda
+     *
+     * @var int
+     */
+    protected $max_guesser_attempts = 2;
+
+    /**
+     * Límite de puntos sobre el eje y que estamos dispuestos a asumir como margen de error
      *
      * @var int
      */
     protected  $limit_edge_error = 2;
 
     /**
-     * Límite de puntos sobre el eje x que estamos dispuestos a asumir como margen
+     * Límite de puntos sobre el eje x que estamos dispuestos a asumir como margen de error
      *
      * @var int
      */
     protected  $limit_continuity_error = 2;
 
 
-    public function __construct(WaveFactory $wave_factory = null)
+    public function __construct(WaveFactory $wave_factory = null,AbstractGuesserColorStrategy $guesser = null)
     {
+
         if(!$wave_factory){
             $wave_factory = ComplexWaveFactory::getInstance();
         }
+
         $this->wave_factory = $wave_factory;
+
+        if(!$guesser instanceof AbstractGuesserColorStrategy){
+            $guesser = new EasyGuesserWaveColorStrategy();
+        }
+
+        $this->guesser_strategy = $guesser;
     }
 
     /**
@@ -60,7 +85,7 @@ abstract class AbstractWaveInterpreter {
      */
     public function createWave($resource, $wave_color = null)
     {
-
+        //Dejamos una puerta abierta para el Template Method
         $this->initCreateWave();
 
         $gd_image = $this->loadResource($resource);
@@ -70,24 +95,39 @@ abstract class AbstractWaveInterpreter {
         }
 
         $image_metadata = $this->createMetaData($gd_image, $wave_color);
-
-        $wave = $this->createWaveFromMetadata($image_metadata);
-
         $validator = $this->wave_factory->createValidator();
 
-        $this->preValidate();
+        //Reseteamos a 0 los colores encontrados por le guesser
+        $this->guesser_strategy->resetGuessedColors();
 
-        if(!$validator->validate($wave)){
-            //todo que hacemos? volvemos a intentar con otro color?
-            return null;
+        $attempts = 0;
+        $find = false;
+        $wave = null;
+
+        //Minentras no la hayamos encontrado y no hayamos superado el número máximo de intentos
+        while(!$find && $attempts < $this->max_guesser_attempts){
+
+            $wave = $this->extractWave($image_metadata->getImageMap(), $this->guesser_strategy->guessWaveColor($image_metadata));
+
+            //Dejamos una puerta abierta para el Template Method
+            $this->preValidate();
+            if($validator->validate($wave)){
+                $find = true;
+            }
+            //Dejamos una puerta abierta para el Template Method
+            $this->postValidate();
+
+            $attempts++;
         }
 
-        $this->postValidate();
-
-
+        //Dejamos una puerta abierta para el Template Method
         $this->finishCreateWave();
 
-        return new ProxyWave($wave);
+        if($wave instanceof AbstractWave){
+            $wave = new ProxyWave($wave);
+        }
+
+        return $wave;
     }
 
 
@@ -123,15 +163,16 @@ abstract class AbstractWaveInterpreter {
 
 
     /**
-     * @param ImageMetadata $image_metadata
-     * @return AbstractWaveInterpreter|\WavesInterpreter\Wave\AbstractWave
+     * @param array $array_map
+     * @param $wave_color
+     *
+     * @return \WavesInterpreter\Wave\AbstractWave
      */
-    protected function createWaveFromMetadata(ImageMetadata $image_metadata)
+    protected function extractWave(array $array_map, $wave_color)
     {
-        $array_map = $image_metadata->getImageMap();
-        $wave_color = $image_metadata->guessWaveColor();
 
         //Flag que se pondrá a cierto una vez empecemos a interpretar
+        //todo esto se puede evitar y optimizar la interpretación si guardasemos la posición de la primera aparición para los colores
         $wave_start = false;
         //Entero que usaremos para acumular el error actual sobre el eje de las x
         $continuity_blank = 0;
@@ -141,7 +182,8 @@ abstract class AbstractWaveInterpreter {
         $finished_x= $step_color_found =false;
         $current_x = $current_y = 0;
 
-        while(!$finished_x  && $current_x < $image_metadata->getWidth() ){
+        //realmente count($array_map) es igual que $image_metadata->getWidth()
+        while(!$finished_x  && $current_x < count($array_map) ){
 
             if($wave_start){
                 //Si hemos empezado a interpretar la onda y no encontramos continuidad en la columna anterior sumamos 1 al error de continuidad
@@ -153,11 +195,11 @@ abstract class AbstractWaveInterpreter {
                 }
 
             }
-
+            //todo borrar esto cuando estes seguro que count($array_map) funciona
             //Comprobamos que existe, si no existe está mal formado el array_map...
-            if(!isset($array_map[$current_x])){
-                break;
-            }
+//            if(!isset($array_map[$current_x])){
+//                break;
+//            }
 
             $y_values = $array_map[$current_x];
 
@@ -165,13 +207,15 @@ abstract class AbstractWaveInterpreter {
             $edge_error = 0;
             $step_color_found = false;
             $finished_y =false;
-            while(!$finished_y && $current_y < $image_metadata->getHeight()){
+            //realmente count($y_values) es igual que $image_metadata->getHeigth()
+            while(!$finished_y && $current_y < count($y_values)){
 
-                //Comprobamos que existe, si no existe está mal formado el array_map...
-                if(!isset($y_values[$current_y])){
-                    $finished_x = true;
-                    break;
-                }
+                //todo borrar esto cuando estes seguro que count($y_values) funciona
+//                //Comprobamos que existe, si no existe está mal formado el array_map...
+//                if(!isset($y_values[$current_y])){
+//                    $finished_x = true;
+//                    break;
+//                }
                 //Si el color de este punto coincide con el de la onda lo guardamos
                 if($y_values[$current_y] == $wave_color){
                     $wave_start = true;

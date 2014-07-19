@@ -1,10 +1,8 @@
 <?php
 
-
 namespace WavesInterpreter;
 
-use WavesInterpreter\ColorGuesser\AbstractGuesserColorStrategy;
-use WavesInterpreter\ColorGuesser\Strategy\EasyGuesserWaveColorStrategy;
+
 use WavesInterpreter\Exception\ImageMetadataException;
 
 /**
@@ -13,9 +11,6 @@ use WavesInterpreter\Exception\ImageMetadataException;
  */
 class ImageMetadata {
 
-
-    /** @var  AbstractGuesserColorStrategy */
-    protected $guesser_strategy;
 
     /** @var  array[int][int] */
     protected $image_map;
@@ -28,16 +23,6 @@ class ImageMetadata {
 
     /** @var  int */
     protected $height;
-
-    public function __construct(AbstractGuesserColorStrategy $guesser = null)
-    {
-        //todo Crear la instancia d elos adivinadores correctamente
-        if(!$guesser instanceof AbstractGuesserColorStrategy){
-            $guesser = new EasyGuesserWaveColorStrategy();
-        }
-
-        $this->guesser_strategy = $guesser;
-    }
 
     /**
      * @return array
@@ -109,6 +94,7 @@ class ImageMetadata {
         //No comprobamos si ya había algo, lo guardamos directamente
         $this->image_map[$x][$y] = $color;
 
+        //todo guardarnos la posición de la primera aparición de cada color
 
         if(isset($this->colors[$color])){
             ++$this->colors[$color];
@@ -116,17 +102,6 @@ class ImageMetadata {
         }
 
         $this->colors[$color] = 1;
-    }
-
-
-    /**
-     * De momento devolemos el color que menos veces aparezca
-     *
-     * @return int
-     */
-    public function guessWaveColor()
-    {
-        return $this->guesser_strategy->guessWaveColor($this);
     }
 
 } 
