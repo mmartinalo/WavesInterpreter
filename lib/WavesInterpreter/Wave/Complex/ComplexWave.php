@@ -14,9 +14,6 @@ use WavesInterpreter\WaveInterpreterUtils;
  */
 class ComplexWave extends AbstractWave{
 
-    /** @var int constante que usaremos como margen de error para generar crestas y valles*/
-    const PIXEL_ERROR_MARGIN = 5;
-
     /** @var array[Point] */
     protected $crest = null;
 
@@ -46,7 +43,7 @@ class ComplexWave extends AbstractWave{
         //Lo añadimos al recorrido, quien somos para negarselo
         $this->trail->addPoint($point);
 
-        //Para no estar actualizando valores en cada adicción de un punto lo haremos en los mismos getter
+        //Para no estar actualizando crestas y valles en cada adicción de un punto lo haremos en los mismos getter
         $this->crest = null; //El array vacio indica que no tiene crestas
         $this->trough = null; //El array vacio indica que no tiene valles
         $this->is_sinusoidal = null;
@@ -62,10 +59,11 @@ class ComplexWave extends AbstractWave{
      */
     public function getCrest()
     {
-        //El array vaio indica que no tiene crestas, sd, nulo si no se han generado todavía
+        //El array vacio indica que no tiene crestas, sd, nulo si no se han generado todavía
         if(is_null($this->crest)){
             $this->generateCrestsAndTrough();
         }
+
         return $this->crest;
     }
 
@@ -74,10 +72,11 @@ class ComplexWave extends AbstractWave{
      */
     public function getTrough()
     {
-        //El array vaio indica que no tiene crestas, sd, nulo si no se han generado todavía
+        //El array vacio indica que no tiene crestas, sd, nulo si no se han generado todavía
         if(is_null($this->trough)){
             $this->generateCrestsAndTrough();
         }
+
         return $this->trough;
     }
 
@@ -147,43 +146,59 @@ class ComplexWave extends AbstractWave{
         throw new WaveException("TODO: implementarlo!!");
     }
 
+    /**
+     * Genera los array de crest y trough a partir de los puntos existentes actualmente en trail
+     *
+     * @throws \WavesInterpreter\Exception\WaveException
+     */
     private function generateCrestsAndTrough()
     {
 
         $this->crest = array();
         $this->trough = array();
 
-        //array que rellenaremos con la parte del recorrido de tamaño self::PIXEL_ERROR_MARGIN
-        $last_points = array();
-        /** @var Point $point */
-        foreach($this->getTrail() as $point){
+        //variable con las que guardaremos la proguesión anterior de la onda y el punto para poder comparar
+        $last_progression = null;
+        /** @var Point $last_point */
+        $last_point = null;
+        /** @var Point $current_point */
+        foreach($this->getTrail() as $current_point){
 
-            $last_points[] = $point;
-            if(count($last_points) < self::PIXEL_ERROR_MARGIN){
-                //Hasta que no tenga el tamaño mínimo continuamos
+            //Nos hacen falta al menos dos puntos apra poder comparar
+            if(!$last_point instanceof Point){
+                $last_point = $current_point;
                 continue;
             }
 
-            //El elemento insertado más antiguo es el candidato a ser analizado
-            /** @var Point $candidate */
-            $candidate = array_shift($last_points);
+            //Obtenemos la progresión actual
+            $current_progression = WaveInterpreterUtils::getProgression($last_point,$current_point );
+            //La primera vez que pasemos no tenemos $last_progression
+            switch($current_progression){
+                case WaveInterpreterUtils::WAVE_PROGRESSION_UP:
 
+                    if($last_progression == WaveInterpreterUtils::WAVE_PROGRESSION_DOWN){
+                        $this->trough[] = $current_point;
+                    }
+                    $last_progression = $current_progression;
+                    break;
 
-            throw new WaveException("TODO hay que ver como hacer esto, xq el código de a continuación se traga la situación de rampa");
-            //Si el candidato es mayor que el punto actual, es candidato para ser cresta
-            if($candidate->getY() > $point->getY()  && WaveInterpreterUtils::isMaximum($candidate, $last_points)){
-                $this->crest[] = $candidate;
+                case WaveInterpreterUtils::WAVE_PROGRESSION_STRAIGHT :
+                    //No hacemos nada. Tampoco actualizamos el last_progression!!
+                    break;
+
+                case WaveInterpreterUtils::WAVE_PROGRESSION_DOWN:
+
+                    if($last_progression == WaveInterpreterUtils::WAVE_PROGRESSION_UP){
+                        $this->crest[] = $current_point;
+                    }
+                    $last_progression = $current_progression;
+                    break;
             }
 
-            //Si el candidato es menor que el punto actual, es candidato para ser valle
-            if($candidate->getY() < $point->getY()  && WaveInterpreterUtils::isMinimum($candidate, $last_points)){
-                $this->trough[] = $candidate;
-            }
-
+            $last_point = $current_point;
         }
 
 
     }
-
 
 }

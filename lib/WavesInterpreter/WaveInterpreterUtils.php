@@ -12,6 +12,11 @@ use WavesInterpreter\Point\Point;
  */
 final class WaveInterpreterUtils {
 
+    //Esto en vez de constante podrían ser clases, ganaríamos algo?
+    const WAVE_PROGRESSION_UP = 'up';
+    const WAVE_PROGRESSION_STRAIGHT = 'straight';
+    const WAVE_PROGRESSION_DOWN = 'down';
+
     /**
      * @param Point $p1
      * @param Point $p2
@@ -54,5 +59,31 @@ final class WaveInterpreterUtils {
         }
 
         return $is_min;
+    }
+
+    /**
+     * Dados dos puntos, devuele la constante de la clase correspondiente a la progresión entre ambos:
+     *  'up', 'straight', 'down'
+     *
+     * @param Point $first_point
+     * @param Point $second_point
+     *
+     * @return string
+     */
+    static function getProgression(Point $first_point, Point $second_point)
+    {
+        if($first_point->getY() > $second_point->getY()){
+
+            $progression = self::WAVE_PROGRESSION_DOWN;
+
+        } else if($first_point->getY() < $second_point->getY()){
+
+            $progression = self::WAVE_PROGRESSION_UP;
+        } else {
+
+            $progression = self::WAVE_PROGRESSION_STRAIGHT;
+        }
+
+        return $progression;
     }
 } 
