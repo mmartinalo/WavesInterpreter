@@ -38,43 +38,43 @@ class SimpleWaveValidator extends AbstractWaveValidator{
         // 1 - continuidad
         // 3 - en el eje x no puede haber dos puntos separados demasiado espacio
 
-        /** @var Point $last_point */
-        $last_point = null;
+        /** @var Point $lastPoint */
+        $lastPoint = null;
         //Lo usaremos para ver que no se repiten en el  mismo eje dos puntos
-        $x_checks = array();
+        $xChecks = array();
         //Empezamos suponiendo que es valida la onda e iremos marcando lo contrario en caso de que no se cumpla
         $continuous = true;
-        $x_repeater = false;
+        $xRepeater = false;
         /** @var Point $point */
         foreach($wave->getTrail() as $point){
 
             //En el primer elemento no tenemos nada que comprobar
-            if(is_null($last_point)){
-                $last_point = $point;
-                $x_checks[$point->getX()] = $point->getY();
+            if(is_null($lastPoint)){
+                $lastPoint = $point;
+                $xChecks[$point->getX()] = $point->getY();
                 continue;
             }
 
             //Si ya no es continua no hace falta que comprobemos
-            if($continuous && $point->getX() < $last_point->getX() ){
+            if($continuous && $point->getX() < $lastPoint->getX() ){
                 $continuous = false;
             }
 
             //Si ya no cumple la condición de un único elemento por eje x no hace falta que comprobemos
-            if(!$x_repeater && isset($x_repeater[$point->getX()])){
+            if(!$xRepeater && isset($xRepeater[$point->getX()])){
                 //Ojo que puede ser que sea creciente o descendiente sobre paralelo a las y, por eso sumamos el continued error de margen
-                if( ($x_repeater[$point->getX()]+$this->max_continued_error) < $point->getY() ){
-                    $x_repeater = true;
+                if( ($xRepeater[$point->getX()]+$this->maxContinuedError) < $point->getY() ){
+                    $xRepeater = true;
                 }
             }
 
             //Guardamos el punto en el array que usamos como ayudante para controlar los repetidos en el eje x
-            $x_checks[$point->getX()] = $point->getY();
+            $xChecks[$point->getX()] = $point->getY();
             //Establecemos le punto anterior al actual antes de pasar al siguiente del recorrido
-            $last_point = $point;
+            $lastPoint = $point;
         }
 
 
-        return $continuous && !$x_repeater;
+        return $continuous && !$xRepeater;
     }
 }

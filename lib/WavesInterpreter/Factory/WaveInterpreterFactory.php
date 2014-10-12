@@ -12,11 +12,11 @@ use WavesInterpreter\Interpreter\AbstractWaveInterpreter;
 abstract class WaveInterpreterFactory{
 
     /**
-     * @param WaveFactory $wave_factory
+     * @param WaveFactory $waveFactory
      * @internal param string $waveType
      * @return AbstractWaveInterpreter
      */
-    abstract function createWaveInterpreter(WaveFactory $wave_factory = null);
+    abstract function createWaveInterpreter(WaveFactory $waveFactory = null);
 
 
 }

@@ -19,17 +19,17 @@ use WavesInterpreter\ImageMetadata;
 class MinGuesserWaveColorStrategy extends AbstractGuesserColorStrategy{
 
     /**
-     * @param ImageMetadata $image_metadata
+     * @param ImageMetadata $imageMetadata
      * @return mixed
      */
-    function guess(ImageMetadata $image_metadata)
+    function guess(ImageMetadata $imageMetadata)
     {
 
         $selected_key = $min_repetitions = null;
-        foreach($image_metadata->getColors() as $key_color => $num_repetitions){
+        foreach($imageMetadata->getColors() as $key_color => $num_repetitions){
 
             //Si lo hemos adivinado antes pasamos de él
-            if(in_array($key_color, $this->guessed_colors)){
+            if(in_array($key_color, $this->guessedColors)){
                 continue;
             }
 

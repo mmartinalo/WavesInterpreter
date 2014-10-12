@@ -7,40 +7,42 @@ use WavesInterpreter\ColorGuesser\AbstractGuesserColorStrategy;
 use WavesInterpreter\ImageMetadata;
 
 /**
+ * Estrategia de "adivinación" a la cual se le indica cual es el color de la onda
+ *
  * Class DefinedColorStrategy
  * @package WavesInterpreter\ColorGuesser\Strategy
  */
 class DefinedColorStrategy extends AbstractGuesserColorStrategy{
 
     /** @var  int */
-    protected $defined_color;
+    protected $definedColor;
 
     public function __construct($color)
     {
-        $this->defined_color = $color;
+        $this->definedColor = $color;
     }
 
     /**
-     * @param ImageMetadata $image_metadata
+     * @param ImageMetadata $imageMetadata
      * @return mixed
      */
-    function guess(ImageMetadata $image_metadata)
+    function guess(ImageMetadata $imageMetadata)
     {
 
         //Si no existe el color que nos facilitaron devolvemos otro
-       if(!array_key_exists($this->defined_color, $image_metadata->getColors())){
+       if(!array_key_exists($this->definedColor, $imageMetadata->getColors())){
             //return array_rand($image_metadata->getColors());
 
            //Vamos a formar un array con la desviación de cada elemento al color definido en el constructor
            $closest = array();
-           foreach ($image_metadata->getColors() as $key_color => $num_repetitions) {
+           foreach ($imageMetadata->getColors() as $keyColor => $numRepetitions) {
 
                //Si lo hemos adivinado antes pasamos de él
-               if(in_array($key_color, $this->guessed_colors)){
+               if(in_array($keyColor, $this->guessedColors)){
                    continue;
                }
 
-               $closest[$key_color] = abs($key_color - $this->defined_color);
+               $closest[$keyColor] = abs($keyColor - $this->definedColor);
            }
 
            //Como pueden estar todos los colores comprobados devolvemos 0 en tal caso
@@ -53,6 +55,6 @@ class DefinedColorStrategy extends AbstractGuesserColorStrategy{
            return key($closest);
        }
 
-       return $this->defined_color;
+       return $this->definedColor;
     }
 }

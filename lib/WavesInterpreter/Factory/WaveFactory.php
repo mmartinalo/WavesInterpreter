@@ -13,10 +13,10 @@ use WavesInterpreter\Wave\AbstractWave;
 abstract class WaveFactory{
 
     /**
-     * @param PointCollectionFactory $collection_factory
+     * @param PointCollectionFactory $collectionFactory
      * @return AbstractWave
      */
-    abstract function createWave(PointCollectionFactory $collection_factory = null);
+    abstract function createWave(PointCollectionFactory $collectionFactory = null);
 
     /**
      * @return AbstractWaveValidator

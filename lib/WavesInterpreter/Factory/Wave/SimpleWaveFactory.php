@@ -10,6 +10,8 @@ use WavesInterpreter\Wave\Simple\SimpleWave;
 
 
 /**
+ * Factoria abstracta para crear instancias de la familia de ondas simples
+ *
  * Class SimpleWaveFactory
  * @package WavesInterpreter\Factory\WaveInterpreter
  */
@@ -36,16 +38,19 @@ class SimpleWaveFactory extends WaveFactory{
     }
 
     /**
-     * @param PointCollectionFactory $collection_factory
+     * En caso de que no se le pase un PointCollectionFactory como parámetro
+     * crearña las colecciones a través de la factoria SimpleCollectionFactory
+     *
+     * @param PointCollectionFactory $collectionFactory
      * @return SimpleWaveFactory
      */
-    function createWave(PointCollectionFactory $collection_factory= null)
+    function createWave(PointCollectionFactory $collectionFactory= null)
     {
-        if(!$collection_factory){
-            $collection_factory = SimpleCollectionFactory::getInstance();
+        if(!$collectionFactory){
+            $collectionFactory = SimpleCollectionFactory::getInstance();
         }
 
-        return new SimpleWave($collection_factory->createCollection());
+        return new SimpleWave($collectionFactory->createCollection());
     }
 
     /**

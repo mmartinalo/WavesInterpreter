@@ -20,14 +20,14 @@ use WavesInterpreter\Wave\Proxy\ProxyWave;
 abstract class AbstractWaveInterpreter {
 
     /** @var  WaveFactory */
-    protected  $wave_factory;
+    protected  $waveFactory;
 
     /**
      * Algoritmo que adivina el color de la onda en la imagen
      *
      * @var \WavesInterpreter\ColorGuesser\AbstractGuesserColorStrategy
      */
-    protected $guesser_strategy;
+    protected $guesserStrategy;
 
 
     /**
@@ -35,82 +35,88 @@ abstract class AbstractWaveInterpreter {
      *
      * @var int
      */
-    protected $max_guesser_attempts = 2;
+    protected $maxGuesserAttempts = 2;
 
     /**
      * Límite de puntos sobre el eje y que estamos dispuestos a asumir como margen de error
      *
      * @var int
      */
-    protected  $limit_edge_error = 2;
+    protected  $limitEdgeError = 2;
 
     /**
      * Límite de puntos sobre el eje x que estamos dispuestos a asumir como margen de error
      *
      * @var int
      */
-    protected  $limit_continuity_error = 2;
+    protected  $limitContinuityError = 2;
 
 
-    public function __construct(WaveFactory $wave_factory = null,AbstractGuesserColorStrategy $guesser = null)
+    public function __construct(WaveFactory $waveFactory = null, AbstractGuesserColorStrategy $guesser = null)
     {
 
-        if(!$wave_factory){
-            $wave_factory = ComplexWaveFactory::getInstance();
+        if(!$waveFactory){
+            $waveFactory = ComplexWaveFactory::getInstance();
         }
 
-        $this->wave_factory = $wave_factory;
+        $this->waveFactory = $waveFactory;
 
         if(!$guesser instanceof AbstractGuesserColorStrategy){
             $guesser = new EasyGuesserWaveColorStrategy();
         }
 
-        $this->guesser_strategy = $guesser;
+        $this->guesserStrategy = $guesser;
     }
 
     /**
      * 1 - Leer recurso
-     * 2 - Ccrear ImageMap
-     * 3 - Adivinar color de la onda
-     * 4 - Crear onda desde ImageMap
-     * 5 - Validar onda
-     * 6 - return Onda
+     * 2 - Binarización
+     * 3 - Fragmentación/Segmentación (Wave isolation)
+     * 4 - Validación
+     * 5 - Adelgazamiento de la onda
+     * 5 - Return
+     *
      *
      * @param string $resource
-     * @param int $wave_color
+     * @param int $waveColor
      *
      * @throws \WavesInterpreter\Exception\WaveInterpreterException
      *
      * @return AbstractWave
      */
-    public function createWave($resource, $wave_color = null)
+    public function createWave($resource, $waveColor = null)
     {
         //Dejamos una puerta abierta para el Template Method
         $this->initCreateWave();
 
-        $gd_image = $this->loadResource($resource);
+        //Paso 1: Leer recurso
+        $gdImage = $this->loadResource($resource);
 
-        if(!is_resource($gd_image)){
+        if(!is_resource($gdImage)){
             throw new WaveInterpreterException("No se leer el recurso que me has dado");
         }
-
-        $image_metadata = $this->createMetaData($gd_image, $wave_color);
-        $validator = $this->wave_factory->createValidator();
+        //Paso 2: Binarización
+        $imageMetadata = $this->binarization($gdImage, $waveColor);
 
         //Reseteamos a 0 los colores encontrados por le guesser
-        $this->guesser_strategy->resetGuessedColors();
+        $this->guesserStrategy->resetGuessedColors();
+
+        $validator = $this->waveFactory->createValidator();
 
         $attempts = 0;
         $find = false;
         $wave = null;
 
         //Minentras no la hayamos encontrado y no hayamos superado el número máximo de intentos
-        while(!$find && $attempts < $this->max_guesser_attempts){
+        while(!$find && $attempts < $this->maxGuesserAttempts){
 
-            $wave = $this->extractWave($image_metadata->getImageMap(), $this->guesser_strategy->guessWaveColor($image_metadata));
+            //Paso 3: Fragmentación/Segmentación
+            $wave = $this->waveIsolation($imageMetadata->getImageMap(), $this->guesserStrategy->guessWaveColor($imageMetadata));
 
             //Dejamos una puerta abierta para el Template Method
             $this->preValidate();
+
+            //Paso 4: Validación
             if($validator->validate($wave)){
                 $find = true;
             }
@@ -120,12 +126,13 @@ abstract class AbstractWaveInterpreter {
             $attempts++;
         }
 
+        if($wave instanceof AbstractWave){
+            //Paso 5: Adelgazamiento de la onda
+            $wave = new ProxyWave($this->thinningWave($wave));
+        }
+
         //Dejamos una puerta abierta para el Template Method
         $this->finishCreateWave();
-
-        if($wave instanceof AbstractWave){
-            $wave = new ProxyWave($wave);
-        }
 
         return $wave;
     }
@@ -142,73 +149,73 @@ abstract class AbstractWaveInterpreter {
     /**
      * Crea una ImageMetadata que será lo que sabemos interpretar de manera genérica para el recurso proporcionado
      *
-     * @param $gd_image
-     * @param null $wave_color
+     * @param $gdImage
+     * @param null $waveColor
      * @return ImageMetadata
      */
-    abstract protected function createMetaData($gd_image, $wave_color = null);
+    abstract protected function binarization($gdImage, $waveColor = null);
 
 
-    /** Se llama al inicio del método initCreateWave */
+    /** Se llama al inicio del método createWave */
     protected function initCreateWave(){}
 
-    /** Se llama al final del método finishCreateWave */
+    /** Se llama al final del método createWave */
     protected function finishCreateWave(){}
 
-    /** Se llama antes de llamar al método guess*/
+    /** Se llama antes de validar la onda */
     protected function preValidate(){}
 
-    /** Se llama después de llamar al método guess*/
+    /** Se llama después de validar la onda */
     protected function postValidate(){}
 
 
     /**
-     * @param array $array_map
-     * @param $wave_color
+     * @param array $arrayMap
+     * @param $waveColor
      *
      * @return \WavesInterpreter\Wave\AbstractWave
      */
-    protected function extractWave(array $array_map, $wave_color)
+    protected function waveIsolation(array $arrayMap, $waveColor)
     {
 
         //Flag que se pondrá a cierto una vez empecemos a interpretar
         //todo esto se puede evitar y optimizar la interpretación si guardasemos la posición de la primera aparición para los colores
-        $wave_start = false;
+        $waveStart = false;
         //Entero que usaremos para acumular el error actual sobre el eje de las x
-        $continuity_blank = 0;
+        $continuityBlank = 0;
 
-        $wave = $this->wave_factory->createWave();
+        $wave = $this->waveFactory->createWave();
 
-        $finished_x= $step_color_found =false;
-        $current_x = $current_y = 0;
+        $finishedX= $stepColorFound =false;
+        $currentX = $currentY = 0;
 
         //realmente count($array_map) es igual que $image_metadata->getWidth()
-        while(!$finished_x  && $current_x < count($array_map) ){
+        while(!$finishedX  && $currentX < count($arrayMap) ){
 
-            if($wave_start){
+            if($waveStart){
                 //Si hemos empezado a interpretar la onda y no encontramos continuidad en la columna anterior sumamos 1 al error de continuidad
                 //En caso de que si lo hubiesemos encontrado lo dejamos a 0 el error de continuidad
-                $continuity_blank = ($step_color_found) ? 0 : $continuity_blank+1;
+                $continuityBlank = ($stepColorFound) ? 0 : $continuityBlank+1;
 
-                if($continuity_blank > $this->limit_continuity_error){
-                    $finished_x = true;
+                if($continuityBlank > $this->limitContinuityError){
+                    $finishedX = true;
                 }
 
             }
             //todo borrar esto cuando estes seguro que count($array_map) funciona
             //Comprobamos que existe, si no existe está mal formado el array_map...
-//            if(!isset($array_map[$current_x])){
+//            if(!isset($array_map[$currentX])){
 //                break;
 //            }
 
-            $y_values = $array_map[$current_x];
+            $yValues = $arrayMap[$currentX];
 
             //Entero que usaremos para acumular el error sobre el eje de las y
-            $edge_error = 0;
-            $step_color_found = false;
-            $finished_y =false;
-            //realmente count($y_values) es igual que $image_metadata->getHeigth()
-            while(!$finished_y && $current_y < count($y_values)){
+            $edgeError = 0;
+            $stepColorFound = false;
+            $finishedY =false;
+            //realmente count($yValues) es igual que $image_metadata->getHeigth()
+            while(!$finishedY && $currentY < count($yValues)){
 
                 //todo borrar esto cuando estes seguro que count($y_values) funciona
 //                //Comprobamos que existe, si no existe está mal formado el array_map...
@@ -217,29 +224,41 @@ abstract class AbstractWaveInterpreter {
 //                    break;
 //                }
                 //Si el color de este punto coincide con el de la onda lo guardamos
-                if($y_values[$current_y] == $wave_color){
-                    $wave_start = true;
-                    $step_color_found = true;
-                    $edge_error = 0;
-                    $wave->addPoint(new Point($current_x,$current_y));
-                } else if($step_color_found && ++$edge_error > $this->limit_edge_error){
+                if($yValues[$currentY] == $waveColor){
+                    $waveStart = true;
+                    $stepColorFound = true;
+                    $edgeError = 0;
+                    $wave->addPoint(new Point($currentX,$currentY));
+                } else if($stepColorFound && ++$edgeError > $this->limitEdgeError){
                     //Si habíamos encontrado un punto de la onda para esta posición y sobrepasamos el margen pasamos de columnna
-                    $finished_y = true;
+                    $finishedY = true;
                 }
 
-                $current_y++;
+                $currentY++;
             }
             //OJO: Si ya hemos encontrado la onda en la columna actual continuamos por $this->limit_edge_error posiciones más abajo que la última,
             // es decir dos veces limit_edge_error, ya que una vez limit_edge_error es la ubicación del punto ya que añadió margen para seguir buscando
             //pero tenemos que controlar que es como mucho la posición 0, que nos vams del array si no
             // si no, seteamos la y a 0
-            $current_y = ($step_color_found) ? max($current_y - ($this->limit_edge_error * 2),0 ): 0;
+            $currentY = ($stepColorFound) ? max($currentY - ($this->limitEdgeError * 2),0 ): 0;
             //aumentamos una posición en el eje de las x
-            $current_x++;
+            $currentX++;
         }
 
         return $wave;
 
+    }
+
+    /**
+     *
+     * @param $wave
+     * @return mixed
+     */
+    private function thinningWave($wave)
+    {
+        //todo queremos adelgazar la onda??
+
+        return $wave;
     }
 
 } 

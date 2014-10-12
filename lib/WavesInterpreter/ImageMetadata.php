@@ -13,7 +13,7 @@ class ImageMetadata {
 
 
     /** @var  array[int][int] */
-    protected $image_map;
+    protected $imageMap;
 
     /** @var  array ; clave => representación del color en número,  valor => numbero de repeticiones  */
     protected $colors;
@@ -29,7 +29,7 @@ class ImageMetadata {
      */
     public function getImageMap()
     {
-        return $this->image_map;
+        return $this->imageMap;
     }
 
     /**
@@ -92,7 +92,7 @@ class ImageMetadata {
         }
 
         //No comprobamos si ya había algo, lo guardamos directamente
-        $this->image_map[$x][$y] = $color;
+        $this->imageMap[$x][$y] = $color;
 
         //todo guardarnos la posición de la primera aparición de cada color
 

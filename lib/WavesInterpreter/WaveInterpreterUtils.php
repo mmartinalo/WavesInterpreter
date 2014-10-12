@@ -30,7 +30,7 @@ final class WaveInterpreterUtils {
     static function isMaximum(Point $candidate, array $points)
     {
         //Si el array de puntos está vacío consideramos cierto que es máximo
-        $is_max = true;
+        $isMax = true;
         foreach($points as $point){
 
             if(!$point instanceof Point){
@@ -38,16 +38,16 @@ final class WaveInterpreterUtils {
             }
 
             //Al meter $is_max en la condición, cuando $candidate->getY() >  $point->getY() no sea cierto, ya nunca será cierto
-            $is_max = ($is_max && $candidate->getY() >  $point->getY());
+            $isMax = ($isMax && $candidate->getY() >  $point->getY());
         }
 
-        return $is_max;
+        return $isMax;
     }
 
     static function isMinimum(Point $candidate, array $points)
     {
         //Si el array de puntos está vacío consideramos cierto que es mínimo
-        $is_min = true;
+        $isMin = true;
         foreach($points as $point){
 
             if(!$point instanceof Point){
@@ -55,28 +55,28 @@ final class WaveInterpreterUtils {
             }
 
             //Al meter $is_min en la condición, cuando $candidate->getY() <  $point->getY() no sea cierto, ya nunca será cierto
-            $is_min = ($is_min && $candidate->getY() <  $point->getY());
+            $isMin = ($isMin && $candidate->getY() <  $point->getY());
         }
 
-        return $is_min;
+        return $isMin;
     }
 
     /**
      * Dados dos puntos, devuele la constante de la clase correspondiente a la progresión entre ambos:
      *  'up', 'straight', 'down'
      *
-     * @param Point $first_point
-     * @param Point $second_point
+     * @param Point $firstPoint
+     * @param Point $secondPoint
      *
      * @return string
      */
-    static function getProgression(Point $first_point, Point $second_point)
+    static function getProgression(Point $firstPoint, Point $secondPoint)
     {
-        if($first_point->getY() > $second_point->getY()){
+        if($firstPoint->getY() > $secondPoint->getY()){
 
             $progression = self::WAVE_PROGRESSION_DOWN;
 
-        } else if($first_point->getY() < $second_point->getY()){
+        } else if($firstPoint->getY() < $secondPoint->getY()){
 
             $progression = self::WAVE_PROGRESSION_UP;
         } else {

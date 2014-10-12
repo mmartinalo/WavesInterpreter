@@ -12,10 +12,10 @@ use WavesInterpreter\Wave\AbstractWave;
 abstract class AbstractWaveValidator {
 
     /** @var int Número mñaximo de pixeles que  admitimos como error de continuidad*/
-    protected $max_continued_error= 3;
+    protected $maxContinuedError= 3;
 
     /** @var int Número de puntos mínimos que obligamos a tener para considerarlo una onda */
-    protected $min_length = 10;
+    protected $minLength = 10;
 
     /**
      * @param AbstractWave $wave
@@ -24,15 +24,15 @@ abstract class AbstractWaveValidator {
     abstract function validate(AbstractWave $wave);
 
     /**
-     * @param int $max_continued_error
+     * @param int $maxContinuedError
      */
-    public function setMaxContinuedError($max_continued_error)
+    public function setMaxContinuedError($maxContinuedError)
     {
         //No dejamos que lo establezcan 0 o negativo
-        if($max_continued_error < 1){
+        if($maxContinuedError < 1){
             return;
         }
-        $this->max_continued_error = $max_continued_error;
+        $this->maxContinuedError = $maxContinuedError;
     }
 
     /**
@@ -40,20 +40,20 @@ abstract class AbstractWaveValidator {
      */
     public function getMaxContinuedError()
     {
-        return $this->max_continued_error;
+        return $this->maxContinuedError;
     }
 
     /**
-     * @param int $min_length
+     * @param int $minLength
      */
-    public function setMinLength($min_length)
+    public function setMinLength($minLength)
     {
         //No dejamos que lo establezcan 0 o negativo
-        if($min_length < 1){
+        if($minLength < 1){
             return;
         }
 
-        $this->min_length = $min_length;
+        $this->minLength = $minLength;
     }
 
     /**
@@ -61,7 +61,7 @@ abstract class AbstractWaveValidator {
      */
     public function getMinLength()
     {
-        return $this->min_length;
+        return $this->minLength;
     }
 
 

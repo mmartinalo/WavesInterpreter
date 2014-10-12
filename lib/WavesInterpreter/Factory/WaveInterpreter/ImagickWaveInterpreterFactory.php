@@ -36,15 +36,15 @@ class ImagickWaveInterpreterFactory extends WaveInterpreterFactory{
 
 
     /**
-     * @param WaveFactory $wave_factory
+     * @param WaveFactory $waveFactory
      * @return ImagickWaveInterpreter
      */
-    function createWaveInterpreter(WaveFactory $wave_factory= null)
+    function createWaveInterpreter(WaveFactory $waveFactory= null)
     {
-        if(!$wave_factory){
-            $wave_factory = ComplexWaveFactory::getInstance();
+        if(!$waveFactory){
+            $waveFactory = ComplexWaveFactory::getInstance();
         }
 
-        return new ImagickWaveInterpreter($wave_factory);
+        return new ImagickWaveInterpreter($waveFactory);
     }
 }

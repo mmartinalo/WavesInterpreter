@@ -24,10 +24,10 @@ abstract class AbstractWave {
     /** @var  AbstractPointCollection */
     protected $trail;
 
-    public function __construct(AbstractPointCollection $point_collection)
+    public function __construct(AbstractPointCollection $pointCollection)
     {
-        $point_collection->clear();
-        $this->trail = $point_collection;
+        $pointCollection->clear();
+        $this->trail = $pointCollection;
     }
 
     abstract function addPoint(Point $point);

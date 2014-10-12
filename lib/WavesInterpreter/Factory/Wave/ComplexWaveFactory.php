@@ -11,6 +11,8 @@ use WavesInterpreter\Wave\Complex\ComplexWave;
 
 
 /**
+ * Factoria abstracta para la creación de ondas y elementos de la familia ComplexWave
+ *
  * Class HashMapWaveFactory
  * @package WavesInterpreter\Factory\WaveInterpreter
  */
@@ -38,16 +40,20 @@ class ComplexWaveFactory extends WaveFactory{
     }
 
     /**
-     * @param PointCollectionFactory $collection_factory
+     * En caso de que no reciba por parámetro un PointCollectionFactory
+     * por defecto creará una la colección de elementos de la onda del a través
+     * de SimpleCollectionFactory
+     *
+     * @param PointCollectionFactory $collectionFactory
      * @return AbstractWave
      */
-    function createWave(PointCollectionFactory $collection_factory = null)
+    function createWave(PointCollectionFactory $collectionFactory = null)
     {
-        if(!$collection_factory){
-            $collection_factory = SimpleCollectionFactory::getInstance();
+        if(!$collectionFactory){
+            $collectionFactory = SimpleCollectionFactory::getInstance();
         }
 
-        return new ComplexWave($collection_factory->createCollection());
+        return new ComplexWave($collectionFactory->createCollection());
     }
 
     /**

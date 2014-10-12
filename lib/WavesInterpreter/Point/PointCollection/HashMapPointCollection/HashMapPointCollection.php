@@ -115,7 +115,7 @@ class HashMapPointCollection extends AbstractPointCollection{
     {
         $is_valid = false;
 
-        foreach($this->collection as $x => $values) {
+        foreach($this->collection as $values) {
             if(array_search($this->position,$values)){
                 $is_valid = true;
             }

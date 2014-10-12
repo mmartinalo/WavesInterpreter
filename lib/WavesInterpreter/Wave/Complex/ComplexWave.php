@@ -21,16 +21,16 @@ class ComplexWave extends AbstractWave{
     protected $trough = null;
 
     /** @var bool  */
-    protected $is_sinusoidal = null;
+    protected $isSinusoidal = null;
 
     /** @var  int */
     protected $frequency = 0;
 
     /** @var Point  */
-    protected $max_point = null;
+    protected $maxPoint = null;
 
     /** @var Point  */
-    protected $min_point = null;
+    protected $minPoint = null;
 
 
     /**
@@ -46,9 +46,9 @@ class ComplexWave extends AbstractWave{
         //Para no estar actualizando crestas y valles en cada adicción de un punto lo haremos en los mismos getter
         $this->crest = null; //El array vacio indica que no tiene crestas
         $this->trough = null; //El array vacio indica que no tiene valles
-        $this->is_sinusoidal = null;
-        $this->max_point = null;
-        $this->min_point = null;
+        $this->isSinusoidal = null;
+        $this->maxPoint = null;
+        $this->minPoint = null;
 
     }
 
@@ -87,11 +87,11 @@ class ComplexWave extends AbstractWave{
      */
     public function isSinusoidal()
     {
-        if(is_null($this->is_sinusoidal)){
+        if(is_null($this->isSinusoidal)){
             $this->checkSinusoidal();
         }
 
-        return $this->is_sinusoidal;
+        return $this->isSinusoidal;
     }
 
     /**
@@ -99,11 +99,11 @@ class ComplexWave extends AbstractWave{
      */
     public function getMaxPoint()
     {
-        if(!$this->max_point instanceof Point){
+        if(!$this->maxPoint instanceof Point){
             $this->generateMaxMin();
         }
 
-        return $this->max_point;
+        return $this->maxPoint;
     }
 
     /**
@@ -111,11 +111,11 @@ class ComplexWave extends AbstractWave{
      */
     public function getMinPoint()
     {
-        if(!$this->max_point instanceof Point){
+        if(!$this->maxPoint instanceof Point){
             $this->generateMaxMin();
         }
 
-        return $this->min_point;
+        return $this->minPoint;
     }
 
 
@@ -125,17 +125,17 @@ class ComplexWave extends AbstractWave{
         foreach($this->getTrail() as $point){
 
             //MinPoint solo hay uno, el primero que encuentre se queda en caso de igualdad
-            if(!$this->min_point instanceof Point){
-                $this->min_point = $point;
-            }else if($this->min_point->getY() > $point->getY()){
-                $this->min_point = $point;
+            if(!$this->minPoint instanceof Point){
+                $this->minPoint = $point;
+            }else if($this->minPoint->getY() > $point->getY()){
+                $this->minPoint = $point;
             }
 
             //MaxPoint solo hay uno, el primero que encuentre se queda en caso de igualdad
-            if(!$this->max_point instanceof Point){
-                $this->max_point = $point;
-            }else if($this->max_point->getY() < $point->getY()){
-                $this->max_point = $point;
+            if(!$this->maxPoint instanceof Point){
+                $this->maxPoint = $point;
+            }else if($this->maxPoint->getY() < $point->getY()){
+                $this->maxPoint = $point;
             }
 
         }
@@ -158,28 +158,28 @@ class ComplexWave extends AbstractWave{
         $this->trough = array();
 
         //variable con las que guardaremos la proguesión anterior de la onda y el punto para poder comparar
-        $last_progression = null;
-        /** @var Point $last_point */
-        $last_point = null;
-        /** @var Point $current_point */
-        foreach($this->getTrail() as $current_point){
+        $lastProgression = null;
+        /** @var Point $lastPoint */
+        $lastPoint = null;
+        /** @var Point $currentPoint */
+        foreach($this->getTrail() as $currentPoint){
 
             //Nos hacen falta al menos dos puntos apra poder comparar
-            if(!$last_point instanceof Point){
-                $last_point = $current_point;
+            if(!$lastPoint instanceof Point){
+                $lastPoint = $currentPoint;
                 continue;
             }
 
             //Obtenemos la progresión actual
-            $current_progression = WaveInterpreterUtils::getProgression($last_point,$current_point );
+            $currentProgression = WaveInterpreterUtils::getProgression($lastPoint,$currentPoint );
             //La primera vez que pasemos no tenemos $last_progression
-            switch($current_progression){
+            switch($currentProgression){
                 case WaveInterpreterUtils::WAVE_PROGRESSION_UP:
 
-                    if($last_progression == WaveInterpreterUtils::WAVE_PROGRESSION_DOWN){
-                        $this->trough[] = $current_point;
+                    if($lastProgression == WaveInterpreterUtils::WAVE_PROGRESSION_DOWN){
+                        $this->trough[] = $currentPoint;
                     }
-                    $last_progression = $current_progression;
+                    $lastProgression = $currentProgression;
                     break;
 
                 case WaveInterpreterUtils::WAVE_PROGRESSION_STRAIGHT :
@@ -188,14 +188,14 @@ class ComplexWave extends AbstractWave{
 
                 case WaveInterpreterUtils::WAVE_PROGRESSION_DOWN:
 
-                    if($last_progression == WaveInterpreterUtils::WAVE_PROGRESSION_UP){
-                        $this->crest[] = $current_point;
+                    if($lastProgression == WaveInterpreterUtils::WAVE_PROGRESSION_UP){
+                        $this->crest[] = $currentPoint;
                     }
-                    $last_progression = $current_progression;
+                    $lastProgression = $currentProgression;
                     break;
             }
 
-            $last_point = $current_point;
+            $lastPoint = $currentPoint;
         }
 
 

@@ -27,11 +27,11 @@ class ImagickWaveInterpreter extends AbstractWaveInterpreter{
     /**
      * Crea una ImageMetadata que será lo que sabemos interpretar de manera genérica para el recurso proporcionado
      *
-     * @param $gd_image
-     * @param null $wave_color
+     * @param $gdImage
+     * @param null $waveColor
      * @return ImageMetadata
      */
-    protected function createMetaData($gd_image, $wave_color = null)
+    protected function binarization($gdImage, $waveColor = null)
     {
         // TODO: Implement createMetaData() method.
     }

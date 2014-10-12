@@ -7,6 +7,8 @@ use WavesInterpreter\Factory\PointCollectionFactory;
 use WavesInterpreter\Point\PointCollection\SimplePointCollection\SimplePointCollection;
 
 /**
+ * Factoria abstracta para la creación de los tipos de almacenaje de onda como HashMapPointCollection
+ *
  * Class SimpleCollectionFactory
  * @package WavesInterpreter\Factory\WaveInterpreter
  */

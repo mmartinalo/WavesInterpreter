@@ -12,35 +12,37 @@ use WavesInterpreter\ImageMetadata;
 abstract class AbstractGuesserColorStrategy {
 
     /** @var array Guardaremos los colores ya usados */
-    protected $guessed_colors = array();
+    protected $guessedColors = array();
 
     /**
-     * @param ImageMetadata $image_metadata
+     * Fase de adivinación del color de onda
+     *
+     * @param ImageMetadata $imageMetadata
      * @return int
      */
-    public function guessWaveColor(ImageMetadata $image_metadata)
+    public function guessWaveColor(ImageMetadata $imageMetadata)
     {
         $this->initGuessWaveColor();
 
-        if(!count($image_metadata->getColors())){
+        if(!count($imageMetadata->getColors())){
             return 0;
         }
 
         $this->preGuess();
-        $selected_key = $this->guess($image_metadata);
+        $selectedKey = $this->guess($imageMetadata);
         $this->postGuess();
 
         //No queremos añadirlo dos veces
-        if(!in_array($selected_key, $this->guessed_colors)){
-            $this->guessed_colors[] = $selected_key;
+        if(!in_array($selectedKey, $this->guessedColors)){
+            $this->guessedColors[] = $selectedKey;
         }
 
         $this->finishGuessWaveColor();
 
-        return $selected_key;
+        return $selectedKey;
     }
 
-    abstract function guess(ImageMetadata $image_metadata);
+    abstract function guess(ImageMetadata $imageMetadata);
 
 
     /** Se llama al inicio del método GuessWaveColor */
@@ -61,6 +63,6 @@ abstract class AbstractGuesserColorStrategy {
      */
     public function resetGuessedColors()
     {
-        $this->guessed_colors = array();
+        $this->guessedColors = array();
     }
 } 

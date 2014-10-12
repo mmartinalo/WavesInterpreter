@@ -38,33 +38,33 @@ class GdWaveInterpreter extends AbstractWaveInterpreter{
     }
 
     /**
-     * @param $gd_image
-     * @param null $wave_color
+     * @param $gdImage
+     * @param null $waveColor
      * @return ImageMetadata
      */
-    protected function createMetaData($gd_image, $wave_color = null)
+    protected function binarization($gdImage, $waveColor = null)
     {
         //En caso de que nos pasen un color le establecemos la estrategia del adivinador correspondiente
-        $guesser = ($wave_color)? new DefinedColorStrategy($wave_color) : null;
-        $img_metadata = new ImageMetadata($guesser);
+        $guesser = ($waveColor)? new DefinedColorStrategy($waveColor) : null;
+        $imgMetadata = new ImageMetadata($guesser);
 
-        $img_width = imagesx($gd_image);
-        $img_height = imagesy($gd_image);
+        $imgWidth = imagesx($gdImage);
+        $imgHeight = imagesy($gdImage);
 
-        $img_metadata->setWidth($img_width);
-        $img_metadata->setHeight($img_height);
+        $imgMetadata->setWidth($imgWidth);
+        $imgMetadata->setHeight($imgHeight);
 
         //la librería gd_image coge como coordenada 0,0 la esquina superior izquierda
         //Nosortos queremos la inferior izquiera, por lo que a las y le tenemos que coger el valor inverso al obtenido
         //Para las x nos da igual, ya que lo comparten
-        for($w=0;$w<$img_width;$w++){
-            for($h=0;$h<$img_height;$h++){
-                $rgb = ImageColorAt($gd_image, $w, $h);
-                $real_y = $img_height - $h -1; //-1 ya que recorremos el array con < en lugar de <= ya que nos salidríamos de la imagen
-                $img_metadata->addPixel($w, $real_y, $rgb);
+        for($w=0;$w<$imgWidth;$w++){
+            for($h=0;$h<$imgHeight;$h++){
+                $rgb = ImageColorAt($gdImage, $w, $h);
+                $realY = $imgHeight - $h -1; //-1 ya que recorremos el array con < en lugar de <= ya que nos salidríamos de la imagen
+                $imgMetadata->addPixel($w, $realY, $rgb);
             }
         }
 
-        return $img_metadata;
+        return $imgMetadata;
     }
 }
