@@ -12,7 +12,7 @@
 
     "minimum-stability": "stable",
     "autoload": {
-        "psr-0": { "WavesInterpreter\\": "lib/" }
+        "psr-0": { "WavesInterpreter\\": "src/" }
     },
     "extra": {
         "branch-alias": {
