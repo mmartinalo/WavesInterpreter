@@ -43,16 +43,14 @@ class GdWaveInterpreter extends AbstractWaveInterpreter{
     /**
      * Dada un recurso lo convierte a un array de colores binarizados.
      *
-     *
      * @param $gdImage
-     * @param null $waveColor
+     *
      * @return ImageMetadata
      */
-    protected function binarization($gdImage, $waveColor = null)
+    protected function binarization($gdImage)
     {
-        //En caso de que nos pasen un color le establecemos la estrategia del adivinador correspondiente
-        $guesser = ($waveColor)? new DefinedColorStrategy($waveColor) : null;
-        $imgMetadata = new ImageMetadata($guesser);
+
+        $imgMetadata = new ImageMetadata();
 
         $imgWidth = imagesx($gdImage);
         $imgHeight = imagesy($gdImage);

@@ -4,6 +4,7 @@ namespace WavesInterpreter\Interpreter;
 
 
 use WavesInterpreter\ColorGuesser\AbstractGuesserColorStrategy;
+use WavesInterpreter\ColorGuesser\Strategy\DefinedColorStrategy;
 use WavesInterpreter\ColorGuesser\Strategy\EasyGuesserWaveColorStrategy;
 use WavesInterpreter\Exception\WaveInterpreterException;
 use WavesInterpreter\Factory\WaveFactory;
@@ -103,10 +104,9 @@ abstract class AbstractWaveInterpreter {
      *
      *
      * @param string $resource
-     * @param int $waveColor
      *
+     * @param null $waveColor
      * @throws \WavesInterpreter\Exception\WaveInterpreterException
-     *
      * @return AbstractWave
      */
     public function createWave($resource, $waveColor = null)
@@ -121,10 +121,14 @@ abstract class AbstractWaveInterpreter {
             throw new WaveInterpreterException("No se leer el recurso que me has dado");
         }
         //Paso 2: Binarización
-        $imageMetadata = $this->binarization($gdImage, $waveColor);
+        $imageMetadata = $this->binarization($gdImage);
+
+        //Si nos pasan un color de onda establecemos la estrategia al DefinedColorStrategy
+        $currentStrategy = (isset($waveColor)) ?
+            new DefinedColorStrategy($waveColor) : $this->guesserStrategy;
 
         //Reseteamos a 0 los colores encontrados por le guesser
-        $this->guesserStrategy->resetGuessedColors();
+        $currentStrategy->resetGuessedColors();
 
         $validator = $this->waveFactory->createValidator();
 
@@ -136,7 +140,7 @@ abstract class AbstractWaveInterpreter {
         while(!$find && $attempts < $this->maxGuesserAttempts){
 
             //Paso 3: Fragmentación/Segmentación
-            $wave = $this->waveIsolation($imageMetadata->getImageMap(), $this->guesserStrategy->guessWaveColor($imageMetadata));
+            $wave = $this->waveIsolation($imageMetadata->getImageMap(), $currentStrategy->guessWaveColor($imageMetadata));
 
             //Dejamos una puerta abierta para el Template Method
             $this->preValidate();
@@ -174,11 +178,11 @@ abstract class AbstractWaveInterpreter {
     /**
      * Crea una ImageMetadata que será lo que sabemos interpretar de manera genérica para el recurso proporcionado
      *
-     * @param $gdImage
-     * @param null $waveColor
+     * @param $image
+     *
      * @return ImageMetadata
      */
-    abstract protected function binarization($gdImage, $waveColor = null);
+    abstract protected function binarization($image);
 
 
     /** Se llama al inicio del método createWave */
