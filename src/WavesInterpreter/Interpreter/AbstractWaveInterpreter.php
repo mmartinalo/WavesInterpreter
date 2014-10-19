@@ -19,6 +19,11 @@ use WavesInterpreter\Wave\Proxy\ProxyWave;
  */
 abstract class AbstractWaveInterpreter {
 
+    const MAX_COLOR_VALUE = 16777215;
+
+    protected $binarizationColors = array();
+
+
     /** @var  WaveFactory */
     protected  $waveFactory;
 
@@ -52,7 +57,19 @@ abstract class AbstractWaveInterpreter {
     protected  $limitContinuityError = 2;
 
 
-    public function __construct(WaveFactory $waveFactory = null, AbstractGuesserColorStrategy $guesser = null)
+    /**
+     * La binarización la vamos a hacer sobre 32 colores
+     * El color FFFFFF se corresponde con el decimal 16777215 por lo que
+     * nuestro rango de agrupar los colores será de 524288
+     *
+     * @param WaveFactory $waveFactory
+     * @param AbstractGuesserColorStrategy $guesser
+     * @param int $numColorsBinarization
+     */
+    public function __construct(
+        WaveFactory $waveFactory = null,
+        AbstractGuesserColorStrategy $guesser = null,
+        $numColorsBinarization = 32)
     {
 
         if(!$waveFactory){
@@ -66,6 +83,14 @@ abstract class AbstractWaveInterpreter {
         }
 
         $this->guesserStrategy = $guesser;
+
+        $colorInt = 0;
+        while($colorInt < self::MAX_COLOR_VALUE){
+            $this->binarizationColors[] = $colorInt;
+            //Lo redondeamos sin ningun decimal, queremos enteros
+            $colorInt += round(self::MAX_COLOR_VALUE/$numColorsBinarization, 0);
+        }
+
     }
 
     /**
