@@ -3,8 +3,6 @@
 
 namespace WavesInterpreter\Interpreter\Gd;
 
-use WavesInterpreter\ColorGuesser\Strategy\DefinedColorStrategy;
-use WavesInterpreter\Exception\WaveInterpreterException;
 use WavesInterpreter\ImageMetadata;
 use WavesInterpreter\Interpreter\AbstractWaveInterpreter;
 
@@ -82,6 +80,7 @@ class GdWaveInterpreter extends AbstractWaveInterpreter{
     private function getColorBinarized($rgb)
     {
 
+        //Si no tenemos generado un array con el conjunto de colores que queremos devolvemos el mismo color
         if(!count($this->binarizationColors)){
             return $rgb;
         }
@@ -90,6 +89,7 @@ class GdWaveInterpreter extends AbstractWaveInterpreter{
             return $this->binarizedColrosCache[$rgb];
         }
 
+        //Vamos recorriendo el array de colores ordenado de menor a mayor hasta encontrar con cual se corresponde
         $position = 0;
         while(isset($this->binarizationColors[$position]) && $rgb > $this->binarizationColors[$position]){
             $position++;

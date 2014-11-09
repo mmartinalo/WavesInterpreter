@@ -7,8 +7,8 @@ use WavesInterpreter\ColorGuesser\AbstractGuesserColorStrategy;
 use WavesInterpreter\ColorGuesser\Strategy\DefinedColorStrategy;
 use WavesInterpreter\ColorGuesser\Strategy\EasyGuesserWaveColorStrategy;
 use WavesInterpreter\Exception\WaveInterpreterException;
+use WavesInterpreter\Factory\Wave\SimpleWaveFactory;
 use WavesInterpreter\Factory\WaveFactory;
-use WavesInterpreter\Factory\Wave\ComplexWaveFactory;
 use WavesInterpreter\ImageMetadata;
 use WavesInterpreter\Wave\AbstractWave;
 use WavesInterpreter\Point\Point;
@@ -41,21 +41,21 @@ abstract class AbstractWaveInterpreter {
      *
      * @var int
      */
-    protected $maxGuesserAttempts = 2;
+    protected $maxGuesserAttempts = 4;
 
     /**
      * Límite de puntos sobre el eje y que estamos dispuestos a asumir como margen de error
      *
      * @var int
      */
-    protected  $limitEdgeError = 2;
+    protected  $limitEdgeError = 5;
 
     /**
      * Límite de puntos sobre el eje x que estamos dispuestos a asumir como margen de error
      *
      * @var int
      */
-    protected  $limitContinuityError = 2;
+    protected  $limitContinuityError = 5;
 
 
     /**
@@ -70,11 +70,11 @@ abstract class AbstractWaveInterpreter {
     public function __construct(
         WaveFactory $waveFactory = null,
         AbstractGuesserColorStrategy $guesser = null,
-        $numColorsBinarization = 32)
+        $numColorsBinarization = 4)
     {
 
         if(!$waveFactory){
-            $waveFactory = ComplexWaveFactory::getInstance();
+            $waveFactory = SimpleWaveFactory::getInstance();
         }
 
         $this->waveFactory = $waveFactory;
@@ -85,6 +85,7 @@ abstract class AbstractWaveInterpreter {
 
         $this->guesserStrategy = $guesser;
 
+        //generamos un array con los valores de los colores para la binarización
         $colorInt = 0;
         while($colorInt < self::MAX_COLOR_VALUE){
             $this->binarizationColors[] = $colorInt;
@@ -208,7 +209,6 @@ abstract class AbstractWaveInterpreter {
     {
 
         //Flag que se pondrá a cierto una vez empecemos a interpretar
-        //todo esto se puede evitar y optimizar la interpretación si guardasemos la posición de la primera aparición para los colores
         $waveStart = false;
         //Entero que usaremos para acumular el error actual sobre el eje de las x
         $continuityBlank = 0;
@@ -218,7 +218,7 @@ abstract class AbstractWaveInterpreter {
         $finishedX= $stepColorFound =false;
         $currentX = $currentY = 0;
 
-        //realmente count($array_map) es igual que $image_metadata->getWidth()
+        //count($array_map) es igual que $image_metadata->getWidth()
         while(!$finishedX  && $currentX < count($arrayMap) ){
 
             if($waveStart){
@@ -231,11 +231,6 @@ abstract class AbstractWaveInterpreter {
                 }
 
             }
-            //todo borrar esto cuando estes seguro que count($array_map) funciona
-            //Comprobamos que existe, si no existe está mal formado el array_map...
-//            if(!isset($array_map[$currentX])){
-//                break;
-//            }
 
             $yValues = $arrayMap[$currentX];
 
@@ -243,15 +238,9 @@ abstract class AbstractWaveInterpreter {
             $edgeError = 0;
             $stepColorFound = false;
             $finishedY =false;
-            //realmente count($yValues) es igual que $image_metadata->getHeigth()
+            //count($yValues) es igual que $image_metadata->getHeigth()
             while(!$finishedY && $currentY < count($yValues)){
 
-                //todo borrar esto cuando estes seguro que count($y_values) funciona
-//                //Comprobamos que existe, si no existe está mal formado el array_map...
-//                if(!isset($y_values[$current_y])){
-//                    $finished_x = true;
-//                    break;
-//                }
                 //Si el color de este punto coincide con el de la onda lo guardamos
                 if($yValues[$currentY] == $waveColor){
                     $waveStart = true;
@@ -265,11 +254,16 @@ abstract class AbstractWaveInterpreter {
 
                 $currentY++;
             }
+
             //OJO: Si ya hemos encontrado la onda en la columna actual continuamos por $this->limit_edge_error posiciones más abajo que la última,
             // es decir dos veces limit_edge_error, ya que una vez limit_edge_error es la ubicación del punto ya que añadió margen para seguir buscando
-            //pero tenemos que controlar que es como mucho la posición 0, que nos vams del array si no
-            // si no, seteamos la y a 0
-            $currentY = ($stepColorFound) ? max($currentY - ($this->limitEdgeError * 2),0 ): 0;
+            // si no, seteamos la y será ese mismo valo multiplicado por las posiciones que hemos ido avanzando, ya que se amplia el radio de error
+
+            $value = ($stepColorFound) ? $currentY - ($this->limitEdgeError * 2) : $currentY - ($this->limitEdgeError * $edgeError);
+
+            //Controlamos que no sea menor que 0
+            $currentY = max($value, 0);
+
             //aumentamos una posición en el eje de las x
             $currentX++;
         }
