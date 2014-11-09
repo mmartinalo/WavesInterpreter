@@ -55,7 +55,7 @@ abstract class AbstractWaveInterpreter {
      *
      * @var int
      */
-    protected  $limitContinuityError = 5;
+    protected  $limitContinuityError = 10;
 
 
     /**
@@ -257,12 +257,8 @@ abstract class AbstractWaveInterpreter {
 
             //OJO: Si ya hemos encontrado la onda en la columna actual continuamos por $this->limit_edge_error posiciones más abajo que la última,
             // es decir dos veces limit_edge_error, ya que una vez limit_edge_error es la ubicación del punto ya que añadió margen para seguir buscando
-            // si no, seteamos la y será ese mismo valo multiplicado por las posiciones que hemos ido avanzando, ya que se amplia el radio de error
-
-            $value = ($stepColorFound) ? $currentY - ($this->limitEdgeError * 2) : $currentY - ($this->limitEdgeError * $edgeError);
-
-            //Controlamos que no sea menor que 0
-            $currentY = max($value, 0);
+            // si no, la y será 0
+            $currentY = ($stepColorFound) ? max($currentY - ($this->limitEdgeError * 2),0) : 0;
 
             //aumentamos una posición en el eje de las x
             $currentX++;
