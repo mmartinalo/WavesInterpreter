@@ -101,6 +101,8 @@ final class WaveInterpreterUtils {
         }
 
         /** @var Point $lastPoint */
+        $lastPoint = null;
+        /** @var Point $maxPoint */
         $maxPoint = null;
         /** @var Point $currentPoint */
         foreach($points as $currentPoint){
