@@ -86,4 +86,39 @@ final class WaveInterpreterUtils {
 
         return $progression;
     }
+
+    /**
+     * Dado un array de Points obtiene el punto máximo de todos ellos
+     *
+     * @param array $points
+     * @return null|\WavesInterpreter\Point\Point
+     */
+    static function getMaxPointTrail(array $points){
+
+        //Si solo tenemos un punto, es el máximo
+        if(count($points) == 1){
+            return $points[0];
+        }
+
+        /** @var Point $lastPoint */
+        $maxPoint = null;
+        /** @var Point $currentPoint */
+        foreach($points as $currentPoint){
+
+            //Nos hacen falta al menos dos puntos para poder comparar
+            if(is_null($lastPoint)){
+                $maxPoint = $currentPoint;
+                continue;
+            }
+
+            //Si el actual es mayor o igual seteamos este como el mayor. En caso de igualdad nos quedamos con el último
+            if($currentPoint->getY() >= $lastPoint->getY()){
+                $maxPoint = $currentPoint;
+            }
+
+        }
+
+        //Si el array no contiene elementos devolverá null ya que no entra ene l foreach
+        return $maxPoint;
+    }
 } 

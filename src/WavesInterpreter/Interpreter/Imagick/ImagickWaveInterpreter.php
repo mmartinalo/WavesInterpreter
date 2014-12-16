@@ -20,7 +20,7 @@ class ImagickWaveInterpreter extends AbstractWaveInterpreter{
      */
     protected function loadResource($resource)
     {
-        return new \Imagick($resource);;
+        return new \Imagick($resource);
     }
 
     /**
