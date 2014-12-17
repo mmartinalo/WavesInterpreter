@@ -136,4 +136,9 @@ class HashMapPointCollection extends AbstractPointCollection{
     }
 
 
+    function toArray()
+    {
+        throw new \Exception("Todo: Implement!");
+        // TODO: Implement toArray() method.
+    }
 }

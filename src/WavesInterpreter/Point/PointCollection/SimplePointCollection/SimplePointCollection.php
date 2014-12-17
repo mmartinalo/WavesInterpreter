@@ -101,4 +101,9 @@ class SimplePointCollection extends AbstractPointCollection{
     {
         $this->position = 0;
     }
+
+    function toArray()
+    {
+        return $this->collection;
+    }
 }

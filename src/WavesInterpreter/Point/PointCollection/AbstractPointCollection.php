@@ -23,5 +23,7 @@ abstract class AbstractPointCollection implements \Iterator{
 
     abstract function count();
 
+    abstract function toArray();
+
 
 }
