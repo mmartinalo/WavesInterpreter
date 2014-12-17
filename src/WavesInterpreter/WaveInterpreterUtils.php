@@ -101,26 +101,21 @@ final class WaveInterpreterUtils {
             return $points[0];
         }
 
-        /** @var Point $lastPoint */
-        $lastPoint = null;
         /** @var Point $maxPoint */
         $maxPoint = null;
         /** @var Point $currentPoint */
         foreach($points as $currentPoint){
 
             //Nos hacen falta al menos dos puntos para poder comparar
-            if(is_null($lastPoint)){
+            if(is_null($maxPoint)){
                 $maxPoint = $currentPoint;
-                $lastPoint = $currentPoint;
                 continue;
             }
 
             //Si el actual es mayor o igual seteamos este como el mayor. En caso de igualdad nos quedamos con el último
-            if($currentPoint->getY() >= $lastPoint->getY()){
+            if($currentPoint->getY() >= $maxPoint->getY()){
                 $maxPoint = $currentPoint;
             }
-
-            $lastPoint = $currentPoint;
 
         }
 
@@ -141,26 +136,22 @@ final class WaveInterpreterUtils {
             return $points[0];
         }
 
-        /** @var Point $lastPoint */
-        $lastPoint = null;
         /** @var Point $maxPoint */
         $minPoint = null;
         /** @var Point $currentPoint */
         foreach($points as $currentPoint){
 
             //Nos hacen falta al menos dos puntos para poder comparar
-            if(is_null($lastPoint)){
+            if(is_null($minPoint)){
                 $minPoint = $currentPoint;
-                $lastPoint = $currentPoint;
                 continue;
             }
 
             //Si el actual es menor o igual seteamos este como el mayor. En caso de igualdad nos quedamos con el último
-            if($currentPoint->getY() <= $lastPoint->getY()){
+            if($currentPoint->getY() <= $minPoint->getY()){
                 $minPoint = $currentPoint;
             }
 
-            $lastPoint = $currentPoint;
         }
 
         //Si el array no contiene elementos devolverá null ya que no entra en el foreach
