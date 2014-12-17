@@ -172,7 +172,7 @@ final class WaveInterpreterUtils {
         }
 
         //Solo podemos devolver una distancia si es un array de por lo menos dos elementos
-        if(count($points)  == 2 ){
+        if(count($points)  == 1 ){
             return 1;
         }
 
@@ -195,12 +195,17 @@ final class WaveInterpreterUtils {
      */
     static public  function getYDistance(array $points = array()){
 
-        $minPoint = self::getMinPointTrail($points);
-        $maxPoint = self::getMaxPointTrail($points);
-
-        if(!$minPoint instanceof Point || !$maxPoint instanceof Point){
+        if(!count($points)){
             return 0;
         }
+
+        if(count($points) == 1){
+            return 1;
+        }
+
+        //Si llegamos hasta aquí no tenemos que validar que nos devuelve una instancia en lugar de null
+        $minPoint = self::getMinPointTrail($points);
+        $maxPoint = self::getMaxPointTrail($points);
 
         return $maxPoint->getY() - $minPoint->getY();
     }
