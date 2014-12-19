@@ -45,7 +45,8 @@ class ImagickWaveInterpreter extends AbstractWaveInterpreter{
         for($w=0;$w<$imgWidth;$w++){
             for($h=0;$h<$imgHeight;$h++){
                 $imgPixel = $imagickImage->getimagepixelcolor($w,$h);
-                $imgMetadata->addPixel($w, $h, $this->getColorBinarized(array_sum($imgPixel->getColor())));
+                $realY = $imgHeight - $h -1; //-1 ya que recorremos el array con < en lugar de <= ya que nos salidríamos de la imagen
+                $imgMetadata->addPixel($w, $realY, $this->getColorBinarized(array_sum($imgPixel->getColor())));
             }
         }
 
