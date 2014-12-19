@@ -11,6 +11,7 @@ use WavesInterpreter\Interpreter\AbstractWaveInterpreter;
  */
 class ImagickWaveInterpreter extends AbstractWaveInterpreter{
 
+    const MAX_COLOR_VALUE = 766;
 
     private $binarizedColrosCache = array();
 
@@ -43,7 +44,8 @@ class ImagickWaveInterpreter extends AbstractWaveInterpreter{
 
         for($w=0;$w<$imgWidth;$w++){
             for($h=0;$h<$imgHeight;$h++){
-                $imgMetadata->addPixel($w, $h, $this->getColorBinarized($imagickImage->getimagepixelcolor($w,$h)));
+                $imgPixel = $imagickImage->getimagepixelcolor($w,$h);
+                $imgMetadata->addPixel($w, $h, $this->getColorBinarized(array_sum($imgPixel->getColor())));
             }
         }
 
@@ -80,5 +82,15 @@ class ImagickWaveInterpreter extends AbstractWaveInterpreter{
 
         return $this->binarizedColrosCache[$rgb];
 
+    }
+
+    /**
+     * Para una correcta binarización tenemos que saber el rango máximo del valor de un color
+     *
+     * @return mixed
+     */
+    protected function getMaxColorValue()
+    {
+        return self::MAX_COLOR_VALUE;
     }
 }

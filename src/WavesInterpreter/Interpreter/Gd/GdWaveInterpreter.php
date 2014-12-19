@@ -12,6 +12,7 @@ use WavesInterpreter\Interpreter\AbstractWaveInterpreter;
  */
 class GdWaveInterpreter extends AbstractWaveInterpreter{
 
+    const MAX_COLOR_VALUE = 16777215;
 
     private $binarizedColrosCache = array();
 
@@ -28,7 +29,8 @@ class GdWaveInterpreter extends AbstractWaveInterpreter{
                 $img = @imagecreatefrompng($resource);
                 break;
             case preg_match('/.jpg/i',$resource) != false :
-                $img = @imagecreatefromjpeg($resource);
+            case preg_match('/.jpeg/i',$resource) != false :
+            $img = @imagecreatefromjpeg($resource);
                 break;
             default:
                 $img = @imagecreatefromstring($resource);
@@ -102,5 +104,15 @@ class GdWaveInterpreter extends AbstractWaveInterpreter{
 
         return $this->binarizedColrosCache[$rgb];
 
+    }
+
+    /**
+     * Para una correcta binarización tenemos que saber el rango máximo del valor de un color
+     *
+     * @return mixed
+     */
+    protected function getMaxColorValue()
+    {
+        return self::MAX_COLOR_VALUE;
     }
 }

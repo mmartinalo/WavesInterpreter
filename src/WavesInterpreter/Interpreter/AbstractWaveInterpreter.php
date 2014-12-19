@@ -20,7 +20,6 @@ use WavesInterpreter\Wave\Proxy\ProxyWave;
  */
 abstract class AbstractWaveInterpreter {
 
-    const MAX_COLOR_VALUE = 16777215;
 
     protected $binarizationColors = array();
 
@@ -87,10 +86,10 @@ abstract class AbstractWaveInterpreter {
 
         //generamos un array con los valores de los colores para la binarización
         $colorInt = 0;
-        while($colorInt < self::MAX_COLOR_VALUE){
+        while($colorInt < $this->getMaxColorValue()){
             $this->binarizationColors[] = $colorInt;
             //Lo redondeamos sin ningun decimal, queremos enteros
-            $colorInt += round(self::MAX_COLOR_VALUE/$numColorsBinarization, 0);
+            $colorInt += round( $this->getMaxColorValue()/$numColorsBinarization, 0);
         }
 
     }
@@ -116,13 +115,13 @@ abstract class AbstractWaveInterpreter {
         $this->initCreateWave();
 
         //Paso 1: Leer recurso
-        $gdImage = $this->loadResource($resource);
+        $resource = $this->loadResource($resource);
 
-        if(!is_resource($gdImage)){
+        if(is_null($resource)){
             throw new WaveInterpreterException("No se leer el recurso que me has dado");
         }
         //Paso 2: Binarización
-        $imageMetadata = $this->binarization($gdImage);
+        $imageMetadata = $this->binarization($resource);
 
         //Si nos pasan un color de onda establecemos la estrategia al DefinedColorStrategy
         $currentStrategy = (isset($waveColor)) ?
@@ -184,6 +183,13 @@ abstract class AbstractWaveInterpreter {
      * @return ImageMetadata
      */
     abstract protected function binarization($image);
+
+    /**
+     * Para una correcta binarización tenemos que saber el rango máximo del valor de un color
+     *
+     * @return mixed
+     */
+    abstract protected function getMaxColorValue();
 
 
     /** Se llama al inicio del método createWave */
