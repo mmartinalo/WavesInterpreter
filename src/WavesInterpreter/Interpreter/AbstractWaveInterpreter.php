@@ -117,7 +117,7 @@ abstract class AbstractWaveInterpreter {
         //Paso 1: Leer recurso
         $resource = $this->loadResource($resource);
 
-        if(is_null($resource)){
+        if(is_null($resource) || $resource===false ){
             throw new WaveInterpreterException("No se leer el recurso que me has dado");
         }
         //Paso 2: Binarización
