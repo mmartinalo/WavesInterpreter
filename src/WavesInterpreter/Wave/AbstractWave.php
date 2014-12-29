@@ -26,7 +26,6 @@ abstract class AbstractWave {
 
     public function __construct(AbstractPointCollection $pointCollection)
     {
-        $pointCollection->clear();
         $this->trail = $pointCollection;
     }
 

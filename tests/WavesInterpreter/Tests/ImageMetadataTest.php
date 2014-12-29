@@ -6,17 +6,12 @@ use WavesInterpreter\ImageMetadata;
 
 
 /**
- * Class WaveInterpreterUtilsTest
+ * Class ImageMetadataTest
  * @package WavesInterpreter\Tests
  */
-class WaveInterpreterUtilsTest extends \PHPUnit_Framework_TestCase
+class ImageMetadataTest extends \PHPUnit_Framework_TestCase
 {
 
-
-
-	protected  function setUp()
-	{
-	}
 
 	public function testSettersAndGetters()
 	{
@@ -33,22 +28,52 @@ class WaveInterpreterUtilsTest extends \PHPUnit_Framework_TestCase
 
 	}
 
+    public function testAddPixel()
+    {
+        $imageMetadata = new ImageMetadata();
+        $imageMetadata->addPixel(1,1,0);
+        $this->assertCount(1,$imageMetadata->getColors());
+        $this->assertTrue(isset($imageMetadata->getColors()[0]));
+        $this->assertEquals(1,$imageMetadata->getColors()[0]);
+        $this->assertCount(1,$imageMetadata->getImageMap());
+
+        $imageMetadata->addPixel(1,1,1);
+        $this->assertCount(1,$imageMetadata->getColors());
+        $this->assertFalse(isset($imageMetadata->getColors()[0]));
+        $this->assertCount(1,$imageMetadata->getImageMap());
+
+        $imageMetadata->addPixel(2,1,0);
+        $this->assertCount(2,$imageMetadata->getColors());
+        $this->assertCount(2,$imageMetadata->getImageMap());
+
+        $imageMetadata->addPixel(3,1,1);
+        $this->assertCount(3,$imageMetadata->getImageMap());
+        $this->assertCount(2,$imageMetadata->getColors());
+        $this->assertEquals(2,$imageMetadata->getColors()[1]);
 
 
+    }
 
-//	public function trailProvider()
-//	{
-//		return array(
-//			array(
-//				array(
-//					new Point(1,3),
-//					new Point(10,19),
-//					new Point(22,7),
-//					new Point(7,1),
-//					new Point(2,2),
-//				)
-//			)
-//		);
-//	}
+    /**
+     * @expectedException \Exception
+     */
+    public function testNoValidX()
+    {
+        $imageMetadata = new ImageMetadata();
+        $imageMetadata->addPixel(-1,1,0);
+
+
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testNoValidY()
+    {
+        $imageMetadata = new ImageMetadata();
+        $imageMetadata->addPixel(1,-1,0);
+
+
+    }
 
 }

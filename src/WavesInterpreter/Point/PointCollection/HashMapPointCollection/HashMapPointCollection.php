@@ -14,6 +14,10 @@ class HashMapPointCollection extends AbstractPointCollection{
     /** @var int variable que guardará el orden del recorrido a la hora de insertar */
     protected $step;
 
+    protected $firstPoint;
+
+    protected $lastPoint;
+
     public function __construct()
     {
         $this->step = 0;
@@ -25,36 +29,30 @@ class HashMapPointCollection extends AbstractPointCollection{
     {
         //Guardamos el step en el array y luego incrementamos
         $this->collection[$point->getX()][$point->getY()] = $this->step++;
+
+        if(is_null($this->firstPoint)){
+            $this->firstPoint = $point;
+        }
+
+        $this->lastPoint = $point;
     }
 
     function clear()
     {
+        $this->firstPoint = null;
+        $this->lastPoint = null;
         $this->step = 0;
         $this->collection = array();
     }
 
     function getFirst()
     {
-        if(!$this->step){
-            return null;
-        }
-
-        $x = array_keys($this->collection)[0];
-        $y = array_search(0,$this->collection[$x]);
-
-        return new Point($x,$y);
+        return $this->firstPoint;
     }
 
     function getLast()
     {
-        if(!$this->step){
-            return null;
-        }
-
-        $keys = array_keys($this->collection);
-        $x = end($keys);
-        $y = array_search(0,$this->collection[$x]);
-        return new Point($x,$y);
+       return $this->lastPoint;
     }
 
     function count()

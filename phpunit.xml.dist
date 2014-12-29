@@ -11,22 +11,17 @@
          syntaxCheck="false"
          bootstrap="tests/bootstrap.php"
         >
+
     <testsuites>
         <testsuite name="WavesInterpreter Test Suite">
             <directory>./tests/WavesInterpreter</directory>
         </testsuite>
     </testsuites>
 
-    <!--<groups>-->
-        <!--<exclude>-->
-            <!--<group>benchmark</group>-->
-        <!--</exclude>-->
-    <!--</groups>-->
-
-
     <filter>
         <whitelist>
             <directory>./src</directory>
         </whitelist>
     </filter>
+
 </phpunit>

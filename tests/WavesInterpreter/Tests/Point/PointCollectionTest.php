@@ -1,6 +1,7 @@
 <?php
 
 namespace WavesInterpreter\Tests\Point;
+
 use WavesInterpreter\Point\Point;
 use WavesInterpreter\Point\PointCollection\HashMapPointCollection\HashMapPointCollection;
 use WavesInterpreter\Point\PointCollection\SimplePointCollection\SimplePointCollection;
@@ -10,7 +11,7 @@ use WavesInterpreter\Point\PointCollection\SimplePointCollection\SimplePointColl
  * Class PointTest
  * @package WavesInterpreter\Tests\Point
  */
-class PointTest extends \PHPUnit_Framework_TestCase
+class PointCollectionTest extends \PHPUnit_Framework_TestCase
 {
 
 	public function testSimpleCollection()

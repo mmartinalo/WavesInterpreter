@@ -7,10 +7,10 @@ use WavesInterpreter\WaveInterpreterUtils;
 
 
 /**
- * Class ImageMetadataTest
+ * Class WaveInterpreterUtilsTest
  * @package WavesInterpreter\Tests
  */
-class ImageMetadataTest extends \PHPUnit_Framework_TestCase
+class WaveInterpreterUtilsTest extends \PHPUnit_Framework_TestCase
 {
 
 	/** @var  Point */

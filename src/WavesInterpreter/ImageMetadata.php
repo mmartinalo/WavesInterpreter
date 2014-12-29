@@ -91,11 +91,19 @@ class ImageMetadata {
             throw new ImageMetadataException("El punto con cooredadas x: $x y coordenada y:$y  no es válido");
         }
 
-        //No comprobamos si ya había algo, lo guardamos directamente
+        //Si ya estaba seteado tenemos que restar uno al color que tuviese guardado
+        if(isset($this->imageMap[$x]) && isset($this->imageMap[$x][$y])){
+            //Si solo había un color hacemos un unset
+            if($this->colors[$this->imageMap[$x][$y]] == 1){
+                unset($this->colors[$this->imageMap[$x][$y]]);
+            }else{
+                //Si no le restamos uno
+                $this->colors[$this->imageMap[$x][$y]] = $this->colors[$this->imageMap[$x][$y]] -1;
+            }
+        }
+
+
         $this->imageMap[$x][$y] = $color;
-
-        //todo guardarnos la posición de la primera aparición de cada color
-
         if(isset($this->colors[$color])){
             ++$this->colors[$color];
             return;

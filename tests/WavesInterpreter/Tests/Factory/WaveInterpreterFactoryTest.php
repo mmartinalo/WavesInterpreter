@@ -5,7 +5,6 @@ namespace WavesInterpreter\Tests\Factory;
 use WavesInterpreter\Factory\WaveInterpreter\GdWaveInterpreterFactory;
 use WavesInterpreter\Factory\WaveInterpreter\ImagickWaveInterpreterFactory;
 
-
 /**
  * Class WaveinterpreterFactoryTest
  * @package WavesInterpreter\Tests\Factory
@@ -18,8 +17,8 @@ class WaveinterpreterFactoryTest extends \PHPUnit_Framework_TestCase
 		$waveInterpreterFactory = GdWaveInterpreterFactory::getInstance();
 
 		$this->assertInstanceOf(
-		     'WavesInterpreter\Interpreter\Gd\GdWaveInterpreter'
-			     , $waveInterpreterFactory->createWaveInterpreter()
+		     'WavesInterpreter\Interpreter\Gd\GdWaveInterpreter',
+             $waveInterpreterFactory->createWaveInterpreter()
 		);
 
 	}
@@ -29,10 +28,28 @@ class WaveinterpreterFactoryTest extends \PHPUnit_Framework_TestCase
 		$waveInterpreterFactory = ImagickWaveInterpreterFactory::getInstance();
 
 		$this->assertInstanceOf(
-		     'WavesInterpreter\Interpreter\Imagick\ImagickWaveInterpreter'
-			     , $waveInterpreterFactory->createWaveInterpreter()
+		     'WavesInterpreter\Interpreter\Imagick\ImagickWaveInterpreter',
+             $waveInterpreterFactory->createWaveInterpreter()
 		);
 
 	}
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testSingletonGDFactory()
+    {
+        $waveInterpreterFactory = GdWaveInterpreterFactory::getInstance();
+        $f = clone $waveInterpreterFactory;
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testSingletonImagickFactory()
+    {
+        $waveInterpreterFactory = ImagickWaveInterpreterFactory::getInstance();
+        $f = clone $waveInterpreterFactory;
+    }
 
 }

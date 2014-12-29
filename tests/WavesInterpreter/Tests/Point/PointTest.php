@@ -1,6 +1,6 @@
 <?php
 
-namespace WavesInterpreter\Tests\Enviroment;
+namespace WavesInterpreter\Tests\Point;
 
 
 use WavesInterpreter\Point\Point;
@@ -8,7 +8,7 @@ use WavesInterpreter\Point\Point;
 
 /**
  * Class PointTest
- * @package WavesInterpreter\Tests\Enviroment
+ * @package WavesInterpreter\Tests\Point
  */
 class PointTest extends \PHPUnit_Framework_TestCase
 {

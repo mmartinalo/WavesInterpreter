@@ -20,8 +20,8 @@ class CollectionFactoryTest extends \PHPUnit_Framework_TestCase
 		$collectionFactory = SimpleCollectionFactory::getInstance();
 
 		$this->assertInstanceOf(
-		     'WavesInterpreter\Point\PointCollection\SimplePointCollection\SimplePointCollection'
-			     , $collectionFactory->createCollection()
+		     'WavesInterpreter\Point\PointCollection\SimplePointCollection\SimplePointCollection',
+             $collectionFactory->createCollection()
 		);
 
 	}
@@ -31,9 +31,27 @@ class CollectionFactoryTest extends \PHPUnit_Framework_TestCase
 		$collectionFactory = HashMapCollectionFactory::getInstance();
 
 		$this->assertInstanceOf(
-		     'WavesInterpreter\Point\PointCollection\HashMapPointCollection\HashMapPointCollection'
-			     , $collectionFactory->createCollection()
+		     'WavesInterpreter\Point\PointCollection\HashMapPointCollection\HashMapPointCollection',
+             $collectionFactory->createCollection()
 		);
 
 	}
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testSingletonSimpleCollection()
+    {
+        $collectionFactory = SimpleCollectionFactory::getInstance();
+        $f = clone $collectionFactory;
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testSingletonHashMapCollection()
+    {
+        $collectionFactory = HashMapCollectionFactory::getInstance();
+        $f = clone $collectionFactory;
+    }
 }
