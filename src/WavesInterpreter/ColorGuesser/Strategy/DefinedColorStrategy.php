@@ -26,12 +26,11 @@ class DefinedColorStrategy extends AbstractGuesserColorStrategy{
      * @param ImageMetadata $imageMetadata
      * @return mixed
      */
-    function guess(ImageMetadata $imageMetadata)
+    protected function guess(ImageMetadata $imageMetadata)
     {
 
-        //Si no existe el color que nos facilitaron devolvemos otro
-       if(!array_key_exists($this->definedColor, $imageMetadata->getColors())){
-            //return array_rand($image_metadata->getColors());
+        //Si ya lo hemos devuelto o no existe el color que nos facilitaron devolvemos el siguiente más cercano
+       if(in_array($this->definedColor, $this->guessedColors) || !array_key_exists($this->definedColor, $imageMetadata->getColors())){
 
            //Vamos a formar un array con la desviación de cada elemento al color definido en el constructor
            $closest = array();

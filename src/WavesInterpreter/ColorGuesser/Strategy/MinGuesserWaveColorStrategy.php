@@ -22,7 +22,7 @@ class MinGuesserWaveColorStrategy extends AbstractGuesserColorStrategy{
      * @param ImageMetadata $imageMetadata
      * @return mixed
      */
-    function guess(ImageMetadata $imageMetadata)
+    protected function guess(ImageMetadata $imageMetadata)
     {
 
         $selected_key = $min_repetitions = null;

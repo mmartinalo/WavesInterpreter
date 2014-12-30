@@ -42,7 +42,7 @@ abstract class AbstractGuesserColorStrategy {
         return $selectedKey;
     }
 
-    abstract function guess(ImageMetadata $imageMetadata);
+    abstract protected function guess(ImageMetadata $imageMetadata);
 
 
     /** Se llama al inicio del método GuessWaveColor */

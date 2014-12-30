@@ -20,7 +20,7 @@ class EasyGuesserWaveColorStrategy extends AbstractGuesserColorStrategy{
      * @param ImageMetadata $imageMetadata
      * @return mixed
      */
-    function guess(ImageMetadata $imageMetadata)
+    protected function guess(ImageMetadata $imageMetadata)
     {
 
 
