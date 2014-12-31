@@ -28,11 +28,8 @@ abstract class AbstractWaveValidator {
      */
     public function setMaxContinuedError($maxContinuedError)
     {
-        //No dejamos que lo establezcan 0 o negativo
-        if($maxContinuedError < 1){
-            return;
-        }
-        $this->maxContinuedError = $maxContinuedError;
+        //No dejamos que lo establezcan a negativo
+        $this->maxContinuedError = ($maxContinuedError < 0) ? 0 : $maxContinuedError;
     }
 
     /**
@@ -49,11 +46,7 @@ abstract class AbstractWaveValidator {
     public function setMinLength($minLength)
     {
         //No dejamos que lo establezcan 0 o negativo
-        if($minLength < 1){
-            return;
-        }
-
-        $this->minLength = $minLength;
+        $this->minLength = ($minLength < 1) ? 1 : $minLength;
     }
 
     /**

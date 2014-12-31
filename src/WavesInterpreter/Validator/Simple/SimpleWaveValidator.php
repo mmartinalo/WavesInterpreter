@@ -44,6 +44,7 @@ class SimpleWaveValidator extends AbstractWaveValidator{
         $xChecks = array();
         //Empezamos suponiendo que es valida la onda e iremos marcando lo contrario en caso de que no se cumpla
         $continuous = true;
+        //Lo usamos como flag, si es cierto es que tiene repetidos elementos sobre el mismo punto x saltandose el maxContinuedError
         $xRepeater = false;
         /** @var Point $point */
         foreach($wave->getTrail() as $point){
@@ -55,8 +56,10 @@ class SimpleWaveValidator extends AbstractWaveValidator{
                 continue;
             }
 
-            //Si ya no es continua no hace falta que comprobemos
-            if($continuous && $point->getX() < $lastPoint->getX() ){
+            //Si el punto actual es menor que el anterior es que hemos ido para atrás
+            //El salto no puede ser mayor que el maxContinuedError
+            if(($point->getX() < $lastPoint->getX()) ||
+                ($lastPoint->getX()+$this->maxContinuedError) <  $point->getX()){
                 $continuous = false;
             }
 

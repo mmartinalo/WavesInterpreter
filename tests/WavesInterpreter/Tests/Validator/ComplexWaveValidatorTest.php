@@ -40,6 +40,20 @@ class ComplexWaveValidatorTest extends \PHPUnit_Framework_TestCase
 
     }
 
+    public function testMinlength(){
+        $this->validator->setMinLength(2);
+        $this->assertEquals(2,$this->validator->getMinLength());
+        $this->validator->setMinLength(-5);
+        $this->assertEquals(1,$this->validator->getMinLength());
+    }
+
+    public function testContinuedError(){
+        $this->validator->setMaxContinuedError(15);
+        $this->assertEquals(15,$this->validator->getMaxContinuedError());
+        $this->validator->setMaxContinuedError(-1);
+        $this->assertEquals(0,$this->validator->getMaxContinuedError());
+    }
+
     /**
      * @dataProvider smallCollectionProvider
      * @param $collectionSmall
@@ -48,23 +62,28 @@ class ComplexWaveValidatorTest extends \PHPUnit_Framework_TestCase
     {
         $wave = new ComplexWave($collectionSmall);
         $this->assertFalse($this->validator->validate($wave));
+        $this->validator->setMinLength(2);
+        $this->assertTrue($this->validator->validate($wave));
+
     }
 
     /**
-     * @dataProvider smallCollectionProvider
-     * @param noContinuedCollectionProvider
+     * @dataProvider noContinuedCollectionProvider
+     * @param $collectionNoContinued
      */
     public function testNoContinuedWave($collectionNoContinued)
     {
         $wave = new ComplexWave($collectionNoContinued);
         $this->assertFalse($this->validator->validate($wave));
+        $this->validator->setMaxContinuedError(15);
+        $this->assertTrue($this->validator->validate($wave));
     }
 
     /**
      * @dataProvider backCollectionProvider
      * @param $collectionBack
      */
-    public function testBacklWave($collectionBack)
+    public function testBackWave($collectionBack)
     {
         $wave = new ComplexWave($collectionBack);
         $this->assertFalse($this->validator->validate($wave));

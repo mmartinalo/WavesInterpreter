@@ -3,7 +3,6 @@
 namespace WavesInterpreter\Tests\Validator;
 
 use WavesInterpreter\Point\Point;
-use WavesInterpreter\Point\PointCollection\HashMapPointCollection\HashMapPointCollection;
 use WavesInterpreter\Point\PointCollection\SimplePointCollection\SimplePointCollection;
 use WavesInterpreter\Validator\Simple\SimpleWaveValidator;
 use WavesInterpreter\Wave\Complex\ComplexWave;
@@ -39,6 +38,20 @@ class SimpleWaveValidatorTest extends \PHPUnit_Framework_TestCase
 
     }
 
+    public function testMinlength(){
+        $this->validator->setMinLength(2);
+        $this->assertEquals(2,$this->validator->getMinLength());
+        $this->validator->setMinLength(-5);
+        $this->assertEquals(1,$this->validator->getMinLength());
+    }
+
+    public function testContinuedError(){
+        $this->validator->setMaxContinuedError(15);
+        $this->assertEquals(15,$this->validator->getMaxContinuedError());
+        $this->validator->setMaxContinuedError(-1);
+        $this->assertEquals(0,$this->validator->getMaxContinuedError());
+    }
+
     /**
      * @dataProvider smallCollectionProvider
      * @param $collectionSmall
@@ -47,23 +60,27 @@ class SimpleWaveValidatorTest extends \PHPUnit_Framework_TestCase
     {
         $wave = new SimpleWave($collectionSmall);
         $this->assertFalse($this->validator->validate($wave));
+        $this->validator->setMinLength(2);
+        $this->assertTrue($this->validator->validate($wave));
     }
 
     /**
-     * @dataProvider smallCollectionProvider
-     * @param noContinuedCollectionProvider
+     * @dataProvider noContinuedCollectionProvider
+     * @param $collectionNoContinued
      */
     public function testNoContinuedWave($collectionNoContinued)
     {
         $wave = new SimpleWave($collectionNoContinued);
         $this->assertFalse($this->validator->validate($wave));
+        $this->validator->setMaxContinuedError(15);
+        $this->assertTrue($this->validator->validate($wave));
     }
 
     /**
      * @dataProvider backCollectionProvider
      * @param $collectionBack
      */
-    public function testBacklWave($collectionBack)
+    public function testBackWave($collectionBack)
     {
         $wave = new SimpleWave($collectionBack);
         $this->assertFalse($this->validator->validate($wave));
