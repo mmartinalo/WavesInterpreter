@@ -74,6 +74,7 @@ class ComplexWaveValidatorTest extends \PHPUnit_Framework_TestCase
     public function testNoContinuedWave($collectionNoContinued)
     {
         $wave = new ComplexWave($collectionNoContinued);
+        $this->validator->setMaxContinuedError(3);
         $this->assertFalse($this->validator->validate($wave));
         $this->validator->setMaxContinuedError(15);
         $this->assertTrue($this->validator->validate($wave));
