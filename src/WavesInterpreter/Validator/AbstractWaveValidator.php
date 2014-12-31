@@ -12,7 +12,7 @@ use WavesInterpreter\Wave\AbstractWave;
 abstract class AbstractWaveValidator {
 
     /** @var int Número mñaximo de pixeles que  admitimos como error de continuidad*/
-    protected $maxContinuedError= 3;
+    protected $maxContinuedError= 20;
 
     /** @var int Número de puntos mínimos que obligamos a tener para considerarlo una onda */
     protected $minLength = 10;
