@@ -10,6 +10,7 @@ use WavesInterpreter\Exception\WaveInterpreterException;
 use WavesInterpreter\Factory\Wave\SimpleWaveFactory;
 use WavesInterpreter\Factory\WaveFactory;
 use WavesInterpreter\ImageMetadata;
+use WavesInterpreter\Validator\AbstractWaveValidator;
 use WavesInterpreter\Wave\AbstractWave;
 use WavesInterpreter\Point\Point;
 use WavesInterpreter\Wave\Proxy\ProxyWave;
@@ -26,6 +27,9 @@ abstract class AbstractWaveInterpreter {
 
     /** @var  WaveFactory */
     protected  $waveFactory;
+
+    /** @var  AbstractWaveValidator */
+    protected $validator;
 
     /**
      * Algoritmo que adivina el color de la onda en la imagen
@@ -77,6 +81,7 @@ abstract class AbstractWaveInterpreter {
         }
 
         $this->waveFactory = $waveFactory;
+        $this->validator = $this->waveFactory->createValidator();
 
         if(!$guesser instanceof AbstractGuesserColorStrategy){
             $guesser = new EasyGuesserWaveColorStrategy();
@@ -130,8 +135,6 @@ abstract class AbstractWaveInterpreter {
         //Reseteamos a 0 los colores encontrados por le guesser
         $currentStrategy->resetGuessedColors();
 
-        $validator = $this->waveFactory->createValidator();
-
         $attempts = 0;
         $find = false;
         $wave = null;
@@ -146,7 +149,7 @@ abstract class AbstractWaveInterpreter {
             $this->preValidate();
 
             //Paso 4: Validación
-            if($validator->validate($wave)){
+            if($this->validator->validate($wave)){
                 $find = true;
             }
             //Dejamos una puerta abierta para el Template Method
@@ -214,26 +217,23 @@ abstract class AbstractWaveInterpreter {
     protected function waveIsolation(array $arrayMap, $waveColor)
     {
 
-        //Flag que se pondrá a cierto una vez empecemos a interpretar
-        $waveStart = false;
-        //Entero que usaremos para acumular el error actual sobre el eje de las x
-        $continuityBlank = 0;
-
         $wave = $this->waveFactory->createWave();
 
-        $finishedX= $stepColorFound =false;
-        $currentX = $currentY = 0;
+        $waveStart = $waveFinished = $stepColorFound =false;
+        $continuityBlank = $currentX = $currentY = 0;
 
         //count($array_map) es igual que $image_metadata->getWidth()
-        while(!$finishedX  && $currentX < count($arrayMap) ){
+        while(!$waveFinished  && $currentX < count($arrayMap) ){
 
             if($waveStart){
                 //Si hemos empezado a interpretar la onda y no encontramos continuidad en la columna anterior sumamos 1 al error de continuidad
                 //En caso de que si lo hubiesemos encontrado lo dejamos a 0 el error de continuidad
                 $continuityBlank = ($stepColorFound) ? 0 : $continuityBlank+1;
 
+                //Si noes hemos pasado terminamos
                 if($continuityBlank > $this->limitContinuityError){
-                    $finishedX = true;
+                    $waveFinished = true;
+                    continue;
                 }
 
             }
